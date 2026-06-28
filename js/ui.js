@@ -51,6 +51,7 @@ const UI = {
       setRad: document.getElementById("setRad"),
       radVal: document.getElementById("radVal"),
       resetBtn: document.getElementById("resetBtn"),
+      fullResetBtn: document.getElementById("fullResetBtn"),
       preview: document.getElementById("previewAudio"),
       toast: document.getElementById("toast"),
     };
@@ -101,6 +102,7 @@ const UI = {
     };
     e.setRad.onchange = () => Settings.save();
     e.resetBtn.onclick = () => this.resetAll();
+    e.fullResetBtn.onclick = () => this.fullReset();
   },
 
   syncCacoBtn() {
@@ -262,6 +264,15 @@ const UI = {
     for (const id of Object.keys(AudioEngine.buffers)) AudioEngine.unload(id);
     this.updateProgress();
     this.toast("🧹 Toutes les voix ont été effacées");
+  },
+
+  async fullReset() {
+    if (!confirm("⚠️ Recommencer tout le jeu depuis le début ?\n\nCela supprime TOUS les enclos, TOUTES les voix et les réglages. Action définitive.")) return;
+    try { await Store.clearVoices(); } catch (e) {}
+    localStorage.removeItem("zoo-placements");
+    localStorage.removeItem("zoo-settings");
+    localStorage.removeItem("zoo-player");
+    location.reload();
   },
 
   closeAll() {
