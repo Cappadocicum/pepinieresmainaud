@@ -29,7 +29,8 @@
   <header id="hud">
     <div class="title">🦁 Zoo de Luca &amp; Logan</div>
     <div class="hud-right">
-      <div id="progress" class="progress">0/50 voix</div>
+      <div id="progress" class="progress">0/50 placés</div>
+      <button id="buildBtn" class="icon-btn" title="Construire le zoo">🏗️</button>
       <button id="cacoBtn" class="icon-btn" title="Tout faire crier en même temps">📢</button>
       <button id="gearBtn" class="icon-btn" title="Réglages">⚙️</button>
     </div>
@@ -46,6 +47,27 @@
     <button class="dbtn down" data-dir="down">▼</button>
   </div>
   <button id="actionBtn" class="action-btn">🎤</button>
+
+  <!-- Mode construction : palette d'animaux -->
+  <div id="palette" class="palette hidden">
+    <div class="palette-head">
+      <b>🏗️ Choisis un animal à placer</b>
+      <button id="buildDone" class="ghost-btn">✓ Terminé</button>
+    </div>
+    <p class="palette-tip">Astuce&nbsp;: touche un enclos déjà posé pour le déplacer.</p>
+    <div id="paletteGrid" class="palette-grid"></div>
+  </div>
+
+  <!-- Mode construction : barre de placement -->
+  <div id="placeBar" class="place-bar hidden">
+    <div class="place-info"><span id="placeEmoji"></span> <b id="placeName"></b></div>
+    <div class="place-hint">Fais glisser la carte pour viser 👆 puis place l'enclos</div>
+    <div class="place-actions">
+      <button id="placeCancel" class="ghost-btn">✕</button>
+      <button id="placeDelete" class="ghost-btn danger hidden">🗑️</button>
+      <button id="placeConfirm" class="rec-btn">✓ Placer ici</button>
+    </div>
+  </div>
 
   <!-- Panneau animal -->
   <div id="animalPanel" class="panel hidden">

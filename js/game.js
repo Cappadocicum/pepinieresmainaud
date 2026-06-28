@@ -31,6 +31,83 @@ const Input = {
   },
 };
 
+// Mode construction : placement libre des enclos
+const Build = {
+  active: false,
+  placing: null,      // { id, isMove, orig }
+  cam: { x: 0, y: 0 },
+  ex: 0, ey: 0, ok: false,
+
+  toggle() { this.active ? this.exit() : this.enter(); },
+  enter() {
+    this.active = true;
+    this.placing = null;
+    this.cam.x = Game.cam.x; this.cam.y = Game.cam.y;
+    Input.clear();
+    UI.enterBuild();
+  },
+  exit() {
+    if (this.placing && this.placing.isMove) this._restore();
+    this.active = false; this.placing = null;
+    Player.ensureFree();
+    UI.exitBuild();
+  },
+  selectAnimal(id, isMove = false, orig = null) {
+    this.placing = { id, isMove, orig };
+    UI.showPlacingBar(ANIMALS.find((a) => a.id === id), isMove);
+  },
+  cancelPlacing() {
+    if (this.placing && this.placing.isMove) this._restore();
+    this.placing = null;
+    UI.openPalette();
+  },
+  _restore() {
+    const p = this.placing.orig;
+    Zoo.place(p.id, p.ex, p.ey);
+    World.applyPlacements(Zoo.placements);
+    UI.updateProgress();
+  },
+  deletePlacing() {
+    if (!this.placing) return;
+    const a = ANIMALS.find((x) => x.id === this.placing.id);
+    if (!confirm("Retirer l'enclos de « " + a.name + " » ?")) return;
+    this.placing = null;        // l'enclos déplacé a déjà été retiré
+    UI.openPalette();
+    UI.updateProgress();
+  },
+  confirm() {
+    if (!this.placing || !this.ok) { UI.toast("⛔ Emplacement impossible ici"); return; }
+    Zoo.place(this.placing.id, this.ex, this.ey);
+    World.applyPlacements(Zoo.placements);
+    this.placing = null;
+    UI.updateProgress();
+    UI.openPalette();
+  },
+  // l'aperçu suit le centre de l'écran
+  updateGhost() {
+    if (!this.placing) return;
+    const wx = this.cam.x + Game.cssW / 2, wy = this.cam.y + Game.cssH / 2;
+    this.ex = Math.round(wx / CFG.TILE - CFG.ENC_W / 2);
+    this.ey = Math.round(wy / CFG.TILE - CFG.ENC_H / 2);
+    this.ok = World.canPlace(this.ex, this.ey);
+  },
+  pan(dx, dy) {
+    this.cam.x = clamp(this.cam.x - dx, 0, Math.max(0, World.W - Game.cssW));
+    this.cam.y = clamp(this.cam.y - dy, 0, Math.max(0, World.H - Game.cssH));
+  },
+  // toucher un enclos posé -> le prendre pour le déplacer
+  pickAt(wx, wy) {
+    if (this.placing) return;
+    const e = World.enclosureAt(wx, wy);
+    if (!e) return;
+    const orig = { id: e.animal.id, ex: e.ex, ey: e.ey };
+    Zoo.remove(e.animal.id);
+    World.applyPlacements(Zoo.placements);
+    UI.updateProgress();
+    this.selectAnimal(orig.id, true, orig);
+  },
+};
+
 const Game = {
   ctx: null,
   cam: { x: 0, y: 0 },
@@ -46,8 +123,10 @@ const Game = {
 
     await Store.open();
     Settings.load();
+    Zoo.load();
     await Images.load();   // portraits + textures générés (sinon repli emoji)
     World.build();
+    World.applyPlacements(Zoo.placements);
     Player.spawn();
     Input.bind();
     UI.init();
@@ -61,15 +140,36 @@ const Game = {
     }
     UI.updateProgress();
 
-    // Toucher la carte pour ouvrir un enclos
+    // Pointeur : en jeu = ouvrir un enclos ; en construction = glisser/sélectionner
+    let down = null;
     canvas.addEventListener("pointerdown", (ev) => {
       AudioEngine.resume();
-      const r = canvas.getBoundingClientRect();
-      const wx = ev.clientX - r.left + this.cam.x;
-      const wy = ev.clientY - r.top + this.cam.y;
-      const enc = World.enclosureAt(wx, wy);
-      if (enc) UI.openAnimal(enc);
+      down = { x: ev.clientX, y: ev.clientY, moved: false, camx: Build.cam.x, camy: Build.cam.y };
     });
+    canvas.addEventListener("pointermove", (ev) => {
+      if (!down) return;
+      const dx = ev.clientX - down.x, dy = ev.clientY - down.y;
+      if (Math.abs(dx) + Math.abs(dy) > 6) down.moved = true;
+      if (Build.active) { Build.cam.x = clamp(down.camx - dx, 0, Math.max(0, World.W - this.cssW)); Build.cam.y = clamp(down.camy - dy, 0, Math.max(0, World.H - this.cssH)); }
+    });
+    const endTap = (ev) => {
+      if (!down) return;
+      const tap = !down.moved;
+      const r = canvas.getBoundingClientRect();
+      if (tap) {
+        if (Build.active) {
+          const wx = ev.clientX - r.left + Build.cam.x, wy = ev.clientY - r.top + Build.cam.y;
+          Build.pickAt(wx, wy);
+        } else {
+          const wx = ev.clientX - r.left + this.cam.x, wy = ev.clientY - r.top + this.cam.y;
+          const enc = World.enclosureAt(wx, wy);
+          if (enc) UI.openAnimal(enc);
+        }
+      }
+      down = null;
+    };
+    canvas.addEventListener("pointerup", endTap);
+    canvas.addEventListener("pointercancel", () => { down = null; });
 
     // Démarrage
     document.getElementById("startBtn").onclick = () => {
@@ -95,16 +195,19 @@ const Game = {
     const dt = Math.min((t - this.last) / 1000, 0.05);
     this.last = t;
 
-    Player.update(dt, Input);
-    AudioEngine.update(Player, World.enclosures);
-
-    // caméra centrée + clamp (en pixels "monde")
-    this.cam.x = clamp(Player.x - this.cssW / 2, 0, Math.max(0, World.W - this.cssW));
-    this.cam.y = clamp(Player.y - this.cssH / 2, 0, Math.max(0, World.H - this.cssH));
-
-    // enclos le plus proche (pour l'interaction)
-    this.near = this._nearest();
-    UI.setNear(this.near);
+    if (Build.active) {
+      // construction : caméra libre, joueur figé
+      Build.updateGhost();
+      this.cam.x = Build.cam.x; this.cam.y = Build.cam.y;
+      this.near = null;
+    } else {
+      Player.update(dt, Input);
+      AudioEngine.update(Player, World.enclosures);
+      this.cam.x = clamp(Player.x - this.cssW / 2, 0, Math.max(0, World.W - this.cssW));
+      this.cam.y = clamp(Player.y - this.cssH / 2, 0, Math.max(0, World.H - this.cssH));
+      this.near = this._nearest();
+      UI.setNear(this.near);
+    }
 
     this.render(t);
     requestAnimationFrame((tt) => this.loop(tt));
@@ -129,8 +232,19 @@ const Game = {
     ctx.save();
     ctx.translate(-this.cam.x, -this.cam.y);
     World.render(ctx, this.cam, this.cssW, this.cssH, t);
-    this._highlightNear(ctx, t);
-    Player.draw(ctx, t);
+    if (Build.active) {
+      if (Build.placing) {
+        World.drawGhost(ctx, Build.ex, Build.ey, Build.ok, ANIMALS.find((a) => a.id === Build.placing.id), t);
+      }
+      // viseur central
+      ctx.strokeStyle = "rgba(255,255,255,.85)"; ctx.lineWidth = 2;
+      const cxp = this.cam.x + this.cssW / 2, cyp = this.cam.y + this.cssH / 2;
+      ctx.beginPath(); ctx.moveTo(cxp - 12, cyp); ctx.lineTo(cxp + 12, cyp);
+      ctx.moveTo(cxp, cyp - 12); ctx.lineTo(cxp, cyp + 12); ctx.stroke();
+    } else {
+      this._highlightNear(ctx, t);
+      Player.draw(ctx, t);
+    }
     ctx.restore();
   },
 

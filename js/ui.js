@@ -12,8 +12,19 @@ const UI = {
       progress: document.getElementById("progress"),
       gearBtn: document.getElementById("gearBtn"),
       cacoBtn: document.getElementById("cacoBtn"),
+      buildBtn: document.getElementById("buildBtn"),
       nearHint: document.getElementById("nearHint"),
       actionBtn: document.getElementById("actionBtn"),
+      // construction
+      palette: document.getElementById("palette"),
+      paletteGrid: document.getElementById("paletteGrid"),
+      buildDone: document.getElementById("buildDone"),
+      placeBar: document.getElementById("placeBar"),
+      placeEmoji: document.getElementById("placeEmoji"),
+      placeName: document.getElementById("placeName"),
+      placeConfirm: document.getElementById("placeConfirm"),
+      placeCancel: document.getElementById("placeCancel"),
+      placeDelete: document.getElementById("placeDelete"),
       // panneau animal
       animalPanel: document.getElementById("animalPanel"),
       apEmoji: document.getElementById("apEmoji"),
@@ -45,6 +56,11 @@ const UI = {
     e.gearBtn.onclick = () => this.openSettings();
     e.cacoBtn.onclick = () => { Settings.cacophony = !Settings.cacophony; Settings.save(); this.syncCacoBtn(); };
     e.actionBtn.onclick = () => { if (Game.near) this.openAnimal(Game.near); };
+    e.buildBtn.onclick = () => Build.toggle();
+    e.buildDone.onclick = () => Build.exit();
+    e.placeConfirm.onclick = () => Build.confirm();
+    e.placeCancel.onclick = () => Build.cancelPlacing();
+    e.placeDelete.onclick = () => Build.deletePlacing();
 
     document.querySelectorAll("[data-close]").forEach((b) => (b.onclick = () => this.closeAll()));
     [e.animalPanel, e.settingsPanel].forEach((p) =>
@@ -77,8 +93,51 @@ const UI = {
   },
 
   updateProgress() {
-    const n = Object.keys(AudioEngine.buffers).length;
-    this.el.progress.textContent = n + "/" + ANIMALS.length + " voix";
+    const placed = World.enclosures.length;
+    const voices = Object.keys(AudioEngine.buffers).length;
+    this.el.progress.textContent = placed + "/" + ANIMALS.length + " placés · " + voices + " voix";
+  },
+
+  // ---------- Mode construction ----------
+  enterBuild() {
+    document.body.classList.add("building");
+    this.el.buildBtn.classList.add("on");
+    this.el.nearHint.classList.add("hidden");
+    this.el.placeBar.classList.add("hidden");
+    this.openPalette();
+  },
+  exitBuild() {
+    document.body.classList.remove("building");
+    this.el.buildBtn.classList.remove("on");
+    this.el.palette.classList.add("hidden");
+    this.el.placeBar.classList.add("hidden");
+  },
+  openPalette() {
+    this.el.placeBar.classList.add("hidden");
+    this.el.palette.classList.remove("hidden");
+    this.refreshPalette();
+  },
+  refreshPalette() {
+    const grid = this.el.paletteGrid;
+    grid.innerHTML = "";
+    for (const a of ANIMALS) {
+      const placed = Zoo.has(a.id);
+      const item = document.createElement("button");
+      item.className = "pal-item" + (placed ? " placed" : "");
+      const img = Images.animal(a.id);
+      item.innerHTML = (img ? '<img src="' + img.src + '" alt="">' : '<span class="pal-emoji">' + a.emoji + "</span>") +
+        '<span class="pal-name">' + a.name + "</span>";
+      item.onclick = () => { if (!placed) Build.selectAnimal(a.id); else this.toast(a.name + " est déjà placé"); };
+      grid.appendChild(item);
+    }
+  },
+  showPlacingBar(animal, isMove) {
+    this.el.palette.classList.add("hidden");
+    this.el.placeBar.classList.remove("hidden");
+    const img = Images.animal(animal.id);
+    this.el.placeEmoji.innerHTML = img ? '<img src="' + img.src + '" style="width:26px;height:26px;vertical-align:middle;object-fit:contain">' : animal.emoji;
+    this.el.placeName.textContent = animal.name;
+    this.el.placeDelete.classList.toggle("hidden", !isMove);
   },
 
   // ---------- Panneau animal ----------

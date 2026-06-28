@@ -62,6 +62,23 @@ const Settings = {
   },
 };
 
+// Enclos posés par le joueur : [{ id, ex, ey }]
+const Zoo = {
+  placements: [],
+  load() {
+    try { this.placements = JSON.parse(localStorage.getItem("zoo-placements") || "[]"); }
+    catch (e) { this.placements = []; }
+  },
+  save() { localStorage.setItem("zoo-placements", JSON.stringify(this.placements)); },
+  place(id, ex, ey) {
+    this.placements = this.placements.filter((p) => p.id !== id);
+    this.placements.push({ id, ex, ey });
+    this.save();
+  },
+  remove(id) { this.placements = this.placements.filter((p) => p.id !== id); this.save(); },
+  has(id) { return this.placements.some((p) => p.id === id); },
+};
+
 // Position du joueur
 const SaveState = {
   loadPlayer() {

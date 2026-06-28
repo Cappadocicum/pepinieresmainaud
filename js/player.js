@@ -10,9 +10,23 @@ const Player = {
     if (saved && saved.x && saved.y && !World.isSolidPx(saved.x, saved.y)) {
       this.x = saved.x; this.y = saved.y;
     } else {
-      this.x = (CFG.MARGIN + (CFG.COLS * World.blockW) / 2) * CFG.TILE;
-      this.y = 1.2 * CFG.TILE;
+      this.x = World.spawnPx.x;
+      this.y = World.spawnPx.y;
     }
+  },
+
+  // si le joueur se retrouve coincé (enclos posé dessus), le repositionner
+  ensureFree() {
+    if (!World.isSolidPx(this.x, this.y)) return;
+    const TILE = CFG.TILE;
+    for (let r = 1; r < 30; r++) {
+      for (let a = 0; a < 8; a++) {
+        const x = this.x + Math.cos(a / 8 * 6.283) * r * TILE;
+        const y = this.y + Math.sin(a / 8 * 6.283) * r * TILE;
+        if (!World.isSolidPx(x, y)) { this.x = x; this.y = y; return; }
+      }
+    }
+    this.x = World.spawnPx.x; this.y = World.spawnPx.y;
   },
 
   update(dt, input) {

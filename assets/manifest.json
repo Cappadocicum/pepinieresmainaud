@@ -55,7 +55,9 @@
     "grass",
     "sand",
     "water",
-    "snow"
+    "snow",
+    "path",
+    "bridge"
   ],
   "decors": [
     "arbre",

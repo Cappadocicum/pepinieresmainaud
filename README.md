@@ -35,17 +35,34 @@ envoyée sur internet — tout reste sur l'appareil).
 - **Ouvrir un animal** : touche l'animal sur la carte, ou approche-toi et
   appuie sur le **bouton 🎤** (ou la touche `E` / `Espace`).
 
-## 🎤 Le principe
+## 🗺️ La carte
 
-- Le zoo contient **50 animaux**, rangés du plus simple au plus rare :
-  - 🐐 **La ferme** (chèvre, cochon, vache, mouton, poule…)
-  - 🦊 **La forêt** (renard, cerf, loup, hibou…)
-  - 🦁 **La savane & le grand zoo** (lion, éléphant, girafe, singe…)
-  - 🐼 **Les exotiques rares** (panda, tigre blanc, ours polaire, dauphin…)
-- Chaque animal commence **sans voix** (grisé, avec une icône 🎤).
-- Ouvre-le, appuie sur **Enregistrer**, fais ta voix la plus drôle, puis
-  **Stop**. Tu peux **Écouter**, **Effacer** et **Réenregistrer** autant
-  que tu veux.
+Un **monde ouvert** vu de dessus, inspiré de *Zelda: A Link to the Past* :
+grandes prairies, **rivières** qui serpentent, **ponts**, forêts d'arbres et
+fleurs. La carte est volontairement dégagée pour te laisser construire ton zoo
+où tu veux.
+
+## 🏗️ Construire ton zoo (bouton 🏗️)
+
+Le zoo démarre **vide** : c'est toi qui places les enclos !
+
+1. Appuie sur **🏗️** en haut à droite → la **palette des 50 animaux**
+   apparaît.
+2. Touche l'animal voulu → un **aperçu d'enclos** apparaît au centre.
+3. **Fais glisser la carte** pour viser l'endroit (vert = OK, rouge = occupé),
+   puis **✓ Placer ici**.
+4. Le **sentier de terre se dessine tout seul** entre les enclos posés (avec
+   des **ponts** quand il traverse une rivière).
+5. Touche un enclos déjà posé pour le **déplacer** ou le **retirer** 🗑️.
+6. **✓ Terminé** pour repasser en mode promenade.
+
+## 🎤 Les voix
+
+- Les 50 animaux vont de la ferme (🐐 chèvre, cochon, vache…) jusqu'aux plus
+  rares (🐼 panda, tigre blanc, ours polaire, dauphin…).
+- Un animal posé commence **sans voix** (grisé, icône 🎤).
+- Touche-le, **Enregistrer**, fais ta voix la plus drôle, puis **Stop**.
+  Tu peux **Écouter**, **Effacer** et **Réenregistrer** autant que tu veux.
 - En te promenant, dès que tu passes **près** d'un animal qui a une voix,
   elle se déclenche (le volume dépend de la distance).
 

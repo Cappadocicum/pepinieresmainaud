@@ -44,19 +44,25 @@ function animalPrompt(a) {
   return `A ${STYLE} The animal is a ${a.name.toLowerCase()}. Make it adorable and a little silly. ${BG}`;
 }
 
+const TEX_STYLE = "16-bit SNES pixel art, top-down overworld ground tile in the exact style of " +
+  "The Legend of Zelda: A Link to the Past (SNES), crisp clean pixels, limited retro palette, " +
+  "seamless tileable repeating texture, uniform, low contrast, no objects, no characters, no text. Square.";
 const TEXTURES = {
-  grass: "Seamless tileable top-down ground texture: short green cartoon grass, very uniform, low contrast, soft, no objects, no shadows at the edges, flat colors, like Zelda A Link to the Past overworld grass. Square, repeating.",
-  sand:  "Seamless tileable top-down ground texture: warm light desert sand, very uniform, low contrast, subtle grain, no objects, flat cartoon colors. Square, repeating.",
-  water: "Seamless tileable top-down ground texture: calm cartoon blue water with tiny gentle ripples, very uniform, low contrast, no objects, flat colors. Square, repeating.",
-  snow:  "Seamless tileable top-down ground texture: clean white-blue snow, very uniform, low contrast, subtle sparkle, no objects, flat cartoon colors. Square, repeating.",
+  grass: `${TEX_STYLE} Lush bright green overworld grass with a few subtle darker grass blades.`,
+  sand:  `${TEX_STYLE} Warm light desert sand / beach.`,
+  water: `${TEX_STYLE} Bright blue water with small pixel ripples and sparkles, classic Zelda overworld water.`,
+  snow:  `${TEX_STYLE} Clean white-blue snow.`,
+  path:  `${TEX_STYLE} Light tan packed-earth dirt path with a few small pebbles.`,
+  bridge:`${TEX_STYLE} Brown wooden plank bridge boards.`,
 };
 
-const PROP_STYLE = "Simple flat cartoon game object, thick bold black outline, flat bright cel-shaded colors, " +
-  "children's game asset, NO face, NO eyes, not a character, not an animal.";
+const PROP_STYLE = "16-bit SNES pixel art top-down game object in the exact style of " +
+  "The Legend of Zelda: A Link to the Past (SNES), crisp clean pixels, limited retro palette, " +
+  "NO face, NO eyes, not a character, not an animal.";
 const PROPS = {
-  arbre:    `${PROP_STYLE} A single lush round green tree with a brown trunk, seen from a slight top-down angle. ${BG}`,
-  buisson:  `${PROP_STYLE} A single small round green leafy bush. ${BG}`,
-  rocher:   `${PROP_STYLE} A single grey rounded boulder rock with a couple of small stones. ${BG}`,
+  arbre:    `${PROP_STYLE} A single round leafy overworld tree with a brown trunk. ${BG}`,
+  buisson:  `${PROP_STYLE} A single small green leafy bush. ${BG}`,
+  rocher:   `${PROP_STYLE} A single grey boulder rock. ${BG}`,
 };
 
 // ---- Appel Gemini avec retries ----
