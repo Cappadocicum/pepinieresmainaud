@@ -18,7 +18,7 @@
       <h1>Le Zoo de<br />Luca &amp; Logan</h1>
       <p>Promène-toi dans le zoo, enregistre la voix rigolote de chaque animal,<br />puis écoute-les quand tu passes à côté&nbsp;!</p>
       <button id="startBtn" class="big-btn">▶️ Jouer</button>
-      <p class="hint">Déplacement&nbsp;: flèches / ZQSD ou la croix tactile.<br />Touche un animal pour enregistrer sa voix.<br /><small style="opacity:.55">version 1.2</small></p>
+      <p class="hint">Déplacement&nbsp;: flèches / ZQSD ou la croix tactile.<br />Touche un animal pour enregistrer sa voix.<br /><small style="opacity:.55">version 1.3</small></p>
     </div>
   </div>
 
@@ -53,9 +53,12 @@
   <div id="palette" class="palette hidden">
     <div class="palette-head">
       <b>🏗️ Choisis un animal à placer</b>
-      <button id="buildDone" class="ghost-btn">✓ Terminé</button>
+      <div class="palette-head-btns">
+        <button id="paletteToggle" class="ghost-btn">⬇️ Réduire</button>
+        <button id="buildDone" class="ghost-btn">✓ Terminé</button>
+      </div>
     </div>
-    <p class="palette-tip">Astuce&nbsp;: touche un enclos déjà posé pour le déplacer.</p>
+    <p class="palette-tip">Astuce&nbsp;: <b>Réduis</b> la palette ⬇️ pour voir toute la carte, puis touche un enclos déjà posé pour le <b>déplacer</b>.</p>
     <div id="paletteGrid" class="palette-grid"></div>
   </div>
 

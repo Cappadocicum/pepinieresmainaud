@@ -336,10 +336,11 @@ const World = {
   // ---------- Rendu ----------
   groundColors(type, dark) {
     switch (type) {
-      case "sand":  return dark ? "#e0c87f" : "#ecd99a";
-      case "water": return dark ? "#4fa9df" : "#5bb6e8";
-      case "snow":  return dark ? "#dfeaf5" : "#eef5fc";
-      default:      return dark ? "#3a9d3a" : "#46b446";
+      case "sand":   return dark ? "#e0c87f" : "#ecd99a";
+      case "water":  return dark ? "#4fa9df" : "#5bb6e8";
+      case "snow":   return dark ? "#dfeaf5" : "#eef5fc";
+      case "jungle": return dark ? "#2f7d3a" : "#368a42";
+      default:       return dark ? "#3a9d3a" : "#46b446";
     }
   },
   _tileColor(name) {

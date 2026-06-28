@@ -18,6 +18,7 @@ const UI = {
       // construction
       palette: document.getElementById("palette"),
       paletteGrid: document.getElementById("paletteGrid"),
+      paletteToggle: document.getElementById("paletteToggle"),
       buildDone: document.getElementById("buildDone"),
       placeBar: document.getElementById("placeBar"),
       placeEmoji: document.getElementById("placeEmoji"),
@@ -65,6 +66,10 @@ const UI = {
     e.actionBtn.onclick = () => { if (Game.near) this.openAnimal(Game.near); };
     e.buildBtn.onclick = () => Build.toggle();
     e.buildDone.onclick = () => Build.exit();
+    e.paletteToggle.onclick = () => {
+      const collapsed = e.palette.classList.toggle("collapsed");
+      e.paletteToggle.textContent = collapsed ? "⬆️ Agrandir" : "⬇️ Réduire";
+    };
     e.placeConfirm.onclick = () => Build.confirm();
     e.placeCancel.onclick = () => Build.cancelPlacing();
     e.placeDelete.onclick = () => Build.deletePlacing();
@@ -126,7 +131,8 @@ const UI = {
   },
   openPalette() {
     this.el.placeBar.classList.add("hidden");
-    this.el.palette.classList.remove("hidden");
+    this.el.palette.classList.remove("hidden", "collapsed");
+    this.el.paletteToggle.textContent = "⬇️ Réduire";
     this.refreshPalette();
   },
   refreshPalette() {

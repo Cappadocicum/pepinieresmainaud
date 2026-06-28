@@ -304,9 +304,12 @@ canvas#game {
   display: flex;
   flex-direction: column;
 }
-.palette-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.palette-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; gap: 8px; }
 .palette-head b { color: var(--green-d); font-size: 16px; }
-.palette-head .ghost-btn { flex: 0 0 auto; padding: 8px 14px; }
+.palette-head-btns { display: flex; gap: 6px; flex: 0 0 auto; }
+.palette-head .ghost-btn { flex: 0 0 auto; padding: 8px 12px; }
+.palette.collapsed { max-height: none; }
+.palette.collapsed .palette-grid, .palette.collapsed .palette-tip { display: none; }
 .palette-tip { margin: 0 0 8px; font-size: 12px; opacity: .65; }
 .palette-grid {
   display: grid;

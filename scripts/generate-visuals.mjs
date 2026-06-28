@@ -41,8 +41,24 @@ const STYLE = "16-bit SNES pixel art sprite, cute chibi full-body animal charact
 const BG = "The character is placed on a clean uniform near-white (#f2f2f2) background, " +
   "with a clear empty margin all around the edges, no scenery, no frame, no border, no drop shadow, no text, no letters. Square image.";
 
+// Noms anglais explicites (évite les confusions de génération, ex: singe -> biche)
+const EN = {
+  chevre: "goat", cochon: "pig", vache: "cow", mouton: "sheep", poule: "hen", coq: "rooster",
+  canard: "duck", oie: "goose", lapin: "rabbit", cheval: "horse", ane: "donkey", chien: "dog",
+  chat: "cat", dindon: "turkey", souris: "mouse", renard: "fox", ecureuil: "squirrel",
+  herisson: "hedgehog", cerf: "deer", sanglier: "wild boar", loup: "wolf", oursbrun: "brown bear",
+  hibou: "owl", chauvesouris: "bat", grenouille: "frog", lion: "lion", tigre: "tiger",
+  elephant: "elephant", girafe: "giraffe", zebre: "zebra", hippopotame: "hippopotamus",
+  rhinoceros: "rhinoceros", singe: "monkey", gorille: "gorilla", crocodile: "crocodile",
+  serpent: "snake", flamant: "pink flamingo", paon: "peacock", perroquet: "parrot",
+  kangourou: "kangaroo", panda: "giant panda", koala: "koala", paresseux: "sloth",
+  pingouin: "penguin", ourspolaire: "polar bear", tigreblanc: "white tiger", leopard: "leopard",
+  dauphin: "dolphin", baleine: "whale", tortue: "turtle",
+};
+
 function animalPrompt(a) {
-  return `A ${STYLE} The animal is a ${a.name.toLowerCase()}. ${BG}`;
+  const en = EN[a.id] || a.name.toLowerCase();
+  return `A ${STYLE} The animal is a ${en} (an actual ${en}, full body). ${BG}`;
 }
 
 const TEX_STYLE = "16-bit SNES pixel art, top-down overworld ground tile in the exact style of " +
@@ -56,6 +72,7 @@ const TEXTURES = {
   path:  `${TEX_STYLE} Light tan packed-earth dirt path with a few small pebbles.`,
   bridge:`${TEX_STYLE} Brown wooden plank bridge boards.`,
   cliff: `${TEX_STYLE} Grey rocky cliff plateau top surface with a few cracks, classic Zelda overworld mountain rock.`,
+  jungle:`${TEX_STYLE} Dense dark green tropical jungle floor with lush leaves and moss.`,
 };
 
 const PROP_STYLE = "16-bit SNES pixel art top-down game object in the exact style of " +
@@ -190,14 +207,21 @@ async function runPool(tasks) {
   const animals = parseAnimals();
   const tasks = [];
 
-  if (ONLY === "all" || ONLY === "animaux")
-    animals.slice(0, LIMIT).forEach((a) => tasks.push({ label: "animal " + a.id, fn: () => saveAnimal(a) }));
-  if (ONLY === "all" || ONLY === "textures")
-    Object.entries(TEXTURES).forEach(([id, p]) => tasks.push({ label: "texture " + id, fn: () => saveTexture(id, p) }));
-  if (ONLY === "all" || ONLY === "props")
-    Object.entries(PROPS).forEach(([id, p]) => tasks.push({ label: "decor " + id, fn: () => saveProp(id, p) }));
-  if (ONLY === "all" || ONLY === "heroes")
-    Object.entries(HEROES).forEach(([id, p]) => tasks.push({ label: "hero " + id, fn: () => saveHero(id, p) }));
+  const ID = args.includes("--id") ? args[args.indexOf("--id") + 1] : null;
+  if (ID) {
+    // régénération chirurgicale d'un seul animal
+    const a = animals.find((x) => x.id === ID);
+    if (a) tasks.push({ label: "animal " + a.id, fn: () => saveAnimal(a) });
+  } else {
+    if (ONLY === "all" || ONLY === "animaux")
+      animals.slice(0, LIMIT).forEach((a) => tasks.push({ label: "animal " + a.id, fn: () => saveAnimal(a) }));
+    if (ONLY === "all" || ONLY === "textures")
+      Object.entries(TEXTURES).forEach(([id, p]) => tasks.push({ label: "texture " + id, fn: () => saveTexture(id, p) }));
+    if (ONLY === "all" || ONLY === "props")
+      Object.entries(PROPS).forEach(([id, p]) => tasks.push({ label: "decor " + id, fn: () => saveProp(id, p) }));
+    if (ONLY === "all" || ONLY === "heroes")
+      Object.entries(HEROES).forEach(([id, p]) => tasks.push({ label: "hero " + id, fn: () => saveHero(id, p) }));
+  }
 
   console.log(`Génération de ${tasks.length} visuels (modèle ${MODEL})…`);
   await runPool(tasks);
