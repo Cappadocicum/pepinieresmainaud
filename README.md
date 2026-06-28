@@ -1,4 +1,4 @@
-# 🦁 Le Zoo de Lucas & Logan
+# 🦁 Le Zoo de Luca & Logan
 
 Un petit jeu rigolo pour les enfants, à la manière des vieux Pokémon / Zelda
 sur Game Boy : on se promène dans un zoo vu de dessus avec un petit
