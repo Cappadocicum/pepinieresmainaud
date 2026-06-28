@@ -67,6 +67,16 @@ const PROPS = {
   rocher:   `${PROP_STYLE} A single grey boulder rock. ${BG}`,
 };
 
+const HERO_BASE = "16-bit SNES pixel art top-down sprite of the SAME cute kid zoo explorer character, " +
+  "wearing a beige safari hat, blue dungaree overalls over a white shirt, brown shoes, friendly smile, " +
+  "in the style of The Legend of Zelda: A Link to the Past hero sprite, crisp clean pixels, bold dark outline, " +
+  "limited retro palette, small chibi full-body proportions, standing.";
+const HEROES = {
+  hero_down: `${HERO_BASE} Seen from the FRONT, facing down toward the camera. ${BG}`,
+  hero_up:   `${HERO_BASE} Seen from BEHIND, facing up and away from the camera (back of the hat visible, no face). ${BG}`,
+  hero_side: `${HERO_BASE} Seen in side PROFILE facing to the RIGHT, mid-stride walking. ${BG}`,
+};
+
 // ---- Appel Gemini avec retries ----
 async function genImage(prompt, tries = 5) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${KEY}`;
@@ -138,6 +148,16 @@ async function saveProp(id, prompt) {
   return "ok";
 }
 
+async function saveHero(id, prompt) {
+  const out = path.join(ROOT, "assets", "perso", id + ".png");
+  if (!FORCE && fs.existsSync(out)) return "skip";
+  const raw = await genImage(prompt);
+  const cut = await cutout(raw);
+  await sharp(cut).resize(192, 192, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
+    .png({ compressionLevel: 9, palette: true }).toFile(out);
+  return "ok";
+}
+
 async function saveTexture(id, prompt) {
   const out = path.join(ROOT, "assets", "textures", id + ".png");
   if (!FORCE && fs.existsSync(out)) return "skip";
@@ -166,7 +186,7 @@ async function runPool(tasks) {
 }
 
 (async () => {
-  for (const d of ["animaux", "textures", "decors"]) fs.mkdirSync(path.join(ROOT, "assets", d), { recursive: true });
+  for (const d of ["animaux", "textures", "decors", "perso"]) fs.mkdirSync(path.join(ROOT, "assets", d), { recursive: true });
   const animals = parseAnimals();
   const tasks = [];
 
@@ -176,6 +196,8 @@ async function runPool(tasks) {
     Object.entries(TEXTURES).forEach(([id, p]) => tasks.push({ label: "texture " + id, fn: () => saveTexture(id, p) }));
   if (ONLY === "all" || ONLY === "props")
     Object.entries(PROPS).forEach(([id, p]) => tasks.push({ label: "decor " + id, fn: () => saveProp(id, p) }));
+  if (ONLY === "all" || ONLY === "heroes")
+    Object.entries(HEROES).forEach(([id, p]) => tasks.push({ label: "hero " + id, fn: () => saveHero(id, p) }));
 
   console.log(`Génération de ${tasks.length} visuels (modèle ${MODEL})…`);
   await runPool(tasks);
@@ -186,6 +208,7 @@ async function runPool(tasks) {
     animals: animals.map((a) => a.id).filter((id) => exists("animaux", id)),
     textures: Object.keys(TEXTURES).filter((id) => exists("textures", id)),
     decors: Object.keys(PROPS).filter((id) => exists("decors", id)),
+    heroes: Object.keys(HEROES).filter((id) => exists("perso", id)),
   };
   fs.writeFileSync(path.join(ROOT, "assets", "manifest.json"), JSON.stringify(manifest, null, 2));
   console.log(`\n📦 manifest.json : ${manifest.animals.length} animaux, ${manifest.textures.length} textures, ${manifest.decors.length} décors.`);

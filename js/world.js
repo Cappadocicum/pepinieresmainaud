@@ -65,14 +65,68 @@ const World = {
       const w = p.w || ENC_W, h = p.h || ENC_H, count = p.count || 1;
       for (let y = p.ey; y < p.ey + h; y++)
         for (let x = p.ex; x < p.ex + w; x++) this.encSolid.add(x + "," + y);
-      this.enclosures.push({
+      const e = {
         animal: a, ex: p.ex, ey: p.ey, w, h, count,
         cx: (p.ex + w / 2) * TILE,
         cy: (p.ey + h / 2) * TILE,
         gate: { x: p.ex + Math.floor(w / 2), y: p.ey + h },
-      });
+      };
+      this._spawnAgents(e);
+      this.enclosures.push(e);
     }
     this._recomputePaths();
+  },
+
+  // crée les individus qui se baladent dans l'enclos
+  _spawnAgents(e) {
+    const TILE = CFG.TILE;
+    const n = Math.max(1, Math.min(e.count || 1, 8));
+    const cols = Math.ceil(Math.sqrt(n));
+    let s = n === 1 ? Math.min(e.w, e.h) * TILE * 0.62 : (Math.min(e.w, e.h) * TILE) / (cols + 0.3);
+    s = clamp(s, TILE * 0.85, TILE * 2.3);
+    let minx = e.ex * TILE + s / 2 + 9, maxx = (e.ex + e.w) * TILE - s / 2 - 9;
+    let miny = e.ey * TILE + s / 2 + 9, maxy = (e.ey + e.h) * TILE - s / 2 - 9;
+    if (maxx < minx) minx = maxx = e.cx;
+    if (maxy < miny) miny = maxy = e.cy;
+    e.bounds = { minx, maxx, miny, maxy, s };
+    e.agents = [];
+    for (let i = 0; i < n; i++) {
+      const x = minx + Math.random() * (maxx - minx);
+      const y = miny + Math.random() * (maxy - miny);
+      e.agents.push({ x, y, tx: x, ty: y, state: "rest", tmr: Math.random() * 0.9, dur: 0.32, hop: 0, hx0: x, hy0: y, hx1: x, hy1: y, facing: 1 });
+    }
+  },
+
+  // animation : petits sauts dans l'enclos (façon Zelda)
+  updateAnimals(dt, camx, camy, vw, vh) {
+    for (const e of this.enclosures) {
+      if (e.cx < camx - 120 || e.cx > camx + vw + 120 || e.cy < camy - 120 || e.cy > camy + vh + 120) continue;
+      const b = e.bounds; if (!b) continue;
+      for (const ag of e.agents) {
+        if (ag.state === "rest") {
+          ag.tmr -= dt;
+          if (ag.tmr <= 0) {
+            if (Math.hypot(ag.tx - ag.x, ag.ty - ag.y) < 6) {
+              ag.tx = b.minx + Math.random() * (b.maxx - b.minx);
+              ag.ty = b.miny + Math.random() * (b.maxy - b.miny);
+            }
+            const dx = ag.tx - ag.x, dy = ag.ty - ag.y, d = Math.hypot(dx, dy) || 1;
+            const L = Math.min(d, 9 + Math.random() * 13);
+            ag.hx0 = ag.x; ag.hy0 = ag.y;
+            ag.hx1 = ag.x + (dx / d) * L; ag.hy1 = ag.y + (dy / d) * L;
+            if (Math.abs(dx) > 1) ag.facing = dx < 0 ? -1 : 1;
+            ag.state = "hop"; ag.dur = 0.3; ag.tmr = 0.3;
+          }
+        } else {
+          ag.tmr -= dt;
+          const p = clamp(1 - ag.tmr / ag.dur, 0, 1);
+          ag.x = ag.hx0 + (ag.hx1 - ag.hx0) * p;
+          ag.y = ag.hy0 + (ag.hy1 - ag.hy0) * p;
+          ag.hop = Math.sin(p * Math.PI);
+          if (ag.tmr <= 0) { ag.x = ag.hx1; ag.y = ag.hy1; ag.hop = 0; ag.state = "rest"; ag.tmr = 0.12 + Math.random() * 0.6; }
+        }
+      }
+    }
   },
 
   canPlace(ex, ey, w, h) {
@@ -320,9 +374,35 @@ const World = {
         ctx.stroke();
       }
     }
+    // coins arrondis (auto-tiling)
+    for (let ty = y0; ty < y1; ty++)
+      for (let tx = x0; tx < x1; tx++) {
+        if (this.tiles[this.idx(tx, ty)] === T_WATER && !this.bridgeSet.has(tx + "," + ty))
+          this._roundCorners(ctx, tx, ty, (a, b2) => this._isWater(a, b2), TILE * 0.5, "#1c5fa6");
+      }
   },
   _isWater(x, y) { return this.get(x, y) === T_WATER; },
   _isCliff(x, y) { return this.get(x, y) === T_CLIFF; },
+  _grassFill(ctx) { return Images.pattern(ctx, "grass") || "#46b446"; },
+
+  // Coins convexes arrondis (auto-tiling) : on remplit le coin avec l'herbe
+  _roundCorners(ctx, tx, ty, isType, R, outline, which) {
+    const TILE = CFG.TILE, x = tx * TILE, y = ty * TILE;
+    const grass = this._grassFill(ctx);
+    const N = !isType(tx, ty - 1), S = !isType(tx, ty + 1), W = !isType(tx - 1, ty), E = !isType(tx + 1, ty);
+    const sect = (cx, cy, a0, a1) => {
+      ctx.fillStyle = grass;
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, R, a0, a1); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = outline; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(cx, cy, R, a0, a1); ctx.stroke();
+    };
+    if (N && W) sect(x, y, 0, Math.PI / 2);
+    if (N && E) sect(x + TILE, y, Math.PI / 2, Math.PI);
+    if (which !== "top") {
+      if (S && W) sect(x, y + TILE, -Math.PI / 2, 0);
+      if (S && E) sect(x + TILE, y + TILE, Math.PI, Math.PI * 1.5);
+    }
+  },
 
   // Falaises : contour foncé + face inférieure (effet de hauteur)
   _drawCliffs(ctx, x0, y0, x1, y1) {
@@ -346,6 +426,12 @@ const World = {
         ctx.stroke();
       }
     }
+    // coins supérieurs arrondis
+    for (let ty = y0; ty < y1; ty++)
+      for (let tx = x0; tx < x1; tx++) {
+        if (this.tiles[this.idx(tx, ty)] === T_CLIFF)
+          this._roundCorners(ctx, tx, ty, (a, b2) => this._isCliff(a, b2), TILE * 0.45, "#3c342a", "top");
+      }
   },
 
   // Positions/tailles des individus selon le nombre dans l'enclos
@@ -393,24 +479,35 @@ const World = {
       ctx.beginPath(); ctx.arc(px, py, 6, 0, 7); ctx.fill();
     }
 
-    // Animal(x) : on dessine `count` individus répartis dans l'enclos
+    // Animaux mobiles : ils sautillent dans l'enclos (façon Zelda)
     const has = AudioEngine.has(a.id);
-    const playing = has && AudioEngine.isPlaying(a.id);
     const img = Images.animal(a.id);
+    const s = (e.bounds && e.bounds.s) || TILE * 1.6;
     ctx.globalAlpha = has ? 1 : 0.5;
-    const spots = this._animalSpots(e);
-    for (let i = 0; i < spots.length; i++) {
-      const sp = spots[i];
-      const bob = Math.sin(t / 420 + e.ex + i * 1.3) * 3 + (playing ? Math.sin(t / 80 + i) * 2 : 0);
+    // tri par y pour un léger effet de profondeur
+    const agents = e.agents ? e.agents.slice().sort((p, q) => p.y - q.y) : [];
+    for (const ag of agents) {
+      const yo = ag.hop * Math.min(12, s * 0.28);
+      // ombre
+      ctx.globalAlpha = (has ? 1 : 0.5) * 0.18;
+      ctx.fillStyle = "#000";
+      ctx.beginPath(); ctx.ellipse(ag.x, ag.y + s * 0.32, s * 0.22, s * 0.09, 0, 0, 7); ctx.fill();
+      ctx.globalAlpha = has ? 1 : 0.5;
       if (img) {
-        ctx.drawImage(img, sp.x - sp.s / 2, sp.y - sp.s / 2 - bob, sp.s, sp.s);
+        if (ag.facing < 0) {
+          ctx.save(); ctx.translate(ag.x, 0); ctx.scale(-1, 1);
+          ctx.drawImage(img, -s / 2, ag.y - s / 2 - yo, s, s); ctx.restore();
+        } else {
+          ctx.drawImage(img, ag.x - s / 2, ag.y - s / 2 - yo, s, s);
+        }
       } else {
         ctx.textAlign = "center"; ctx.textBaseline = "middle";
-        ctx.font = Math.floor(sp.s * 0.8) + 'px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif';
-        ctx.fillText(a.emoji, sp.x, sp.y - bob);
+        ctx.font = Math.floor(s * 0.8) + 'px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif';
+        ctx.fillText(a.emoji, ag.x, ag.y - yo);
       }
     }
     ctx.globalAlpha = 1;
+    const playing = has && AudioEngine.isPlaying(a.id);
 
     // Badge
     ctx.textAlign = "center"; ctx.textBaseline = "middle";

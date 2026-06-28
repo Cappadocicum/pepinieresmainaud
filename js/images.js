@@ -5,6 +5,7 @@ const Images = {
   animals: {},   // id -> HTMLImageElement
   tex: {},       // type -> HTMLImageElement
   decors: {},    // id -> HTMLImageElement
+  heroes: {},    // name -> HTMLImageElement
   patterns: {},  // type -> CanvasPattern (créé à la volée)
   ready: false,
 
@@ -28,11 +29,15 @@ const Images = {
     for (const d of manifest.decors || []) {
       jobs.push(this._loadImg("assets/decors/" + d + ".png").then((img) => { if (img) this.decors[d] = img; }));
     }
+    for (const hn of manifest.heroes || []) {
+      jobs.push(this._loadImg("assets/perso/" + hn + ".png").then((img) => { if (img) this.heroes[hn] = img; }));
+    }
     await Promise.all(jobs);
     this.ready = true;
   },
 
   decor(id) { return this.decors[id] || null; },
+  hero(name) { return this.heroes[name] || null; },
 
   _loadImg(src) {
     return new Promise((res) => {

@@ -65,6 +65,29 @@ const Player = {
 
   draw(ctx, t) {
     const x = this.x, y = this.y;
+
+    // --- Sprite pixel-art si disponible ---
+    const sprite =
+      this.dir === "up" ? Images.hero("hero_up") :
+      this.dir === "down" ? Images.hero("hero_down") :
+      Images.hero("hero_side");
+    if (sprite) {
+      const s = CFG.TILE * 1.55;
+      const hop = this.moving ? Math.abs(Math.sin(t / 110)) * 5 : 0;       // petit sautillement
+      const squash = this.moving ? 1 + Math.sin(t / 110) * 0.04 : 1;
+      // ombre
+      ctx.fillStyle = "rgba(0,0,0,.22)";
+      ctx.beginPath(); ctx.ellipse(x, y + s * 0.34, s * 0.28, s * 0.1, 0, 0, 7); ctx.fill();
+      const flip = this.dir === "left";
+      ctx.save();
+      ctx.translate(x, y - hop);
+      if (flip) ctx.scale(-1, 1);
+      ctx.drawImage(sprite, -s / 2, -s / 2 * squash, s, s * squash);
+      ctx.restore();
+      return;
+    }
+
+    // --- Repli : dessin vectoriel ---
     const walk = this.moving ? Math.sin(t / 90) : 0;
 
     // ombre

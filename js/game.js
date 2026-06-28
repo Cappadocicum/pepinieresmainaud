@@ -231,6 +231,8 @@ const Game = {
       UI.setNear(this.near);
     }
 
+    World.updateAnimals(dt, this.cam.x, this.cam.y, this.cssW, this.cssH);
+
     this.render(t);
     requestAnimationFrame((tt) => this.loop(tt));
   },

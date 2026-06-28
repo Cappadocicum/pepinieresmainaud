@@ -64,5 +64,10 @@
     "arbre",
     "buisson",
     "rocher"
+  ],
+  "heroes": [
+    "hero_down",
+    "hero_up",
+    "hero_side"
   ]
 }

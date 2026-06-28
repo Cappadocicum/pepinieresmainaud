@@ -38,9 +38,13 @@ envoyée sur internet — tout reste sur l'appareil).
 ## 🗺️ La carte
 
 Un **monde ouvert** vu de dessus, inspiré de *Zelda: A Link to the Past* :
-grandes prairies, **rivières** qui serpentent, **ponts**, forêts d'arbres et
-fleurs. La carte est volontairement dégagée pour te laisser construire ton zoo
-où tu veux.
+grandes prairies, **rivières** qui serpentent (avec **berges arrondies** et
+**ponts**), **falaises** rocheuses, forêts d'arbres et fleurs — le tout en
+**pixel-art** avec des bords de terrain raccordés (auto-tiling des coins).
+Ton **héros** est un petit explorateur pixel-art qui marche dans les 4
+directions. Les **animaux se baladent et sautillent dans leur enclos**, comme
+dans un vrai Zelda. La carte est volontairement dégagée pour te laisser
+construire ton zoo où tu veux.
 
 ## 🏗️ Construire ton zoo (bouton 🏗️)
 
