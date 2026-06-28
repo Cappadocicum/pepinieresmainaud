@@ -8,11 +8,21 @@ const Input = {
       KeyW: "up", KeyZ: "up", KeyS: "down", KeyA: "left", KeyQ: "left", KeyD: "right",
     };
     addEventListener("keydown", (e) => {
+      // En mode placement : flèches = bouger l'aperçu, Entrée/Espace = poser
+      if (Build.active && Build.placing) {
+        if (e.code === "ArrowUp" || e.code === "KeyW" || e.code === "KeyZ") { Build.nudge(0, -1); e.preventDefault(); return; }
+        if (e.code === "ArrowDown" || e.code === "KeyS") { Build.nudge(0, 1); e.preventDefault(); return; }
+        if (e.code === "ArrowLeft" || e.code === "KeyA" || e.code === "KeyQ") { Build.nudge(-1, 0); e.preventDefault(); return; }
+        if (e.code === "ArrowRight" || e.code === "KeyD") { Build.nudge(1, 0); e.preventDefault(); return; }
+        if (e.code === "Space" || e.code === "Enter") { Build.confirm(); e.preventDefault(); return; }
+        if (e.code === "Escape") { Build.cancelPlacing(); return; }
+        return;
+      }
       if (map[e.code]) { this[map[e.code]] = true; e.preventDefault(); }
       if (e.code === "Space" || e.code === "Enter" || e.code === "KeyE") {
         if (Game.near) UI.openAnimal(Game.near);
       }
-      if (e.code === "Escape") UI.closeAll();
+      if (e.code === "Escape") { if (Build.active) Build.exit(); else UI.closeAll(); }
     });
     addEventListener("keyup", (e) => { if (map[e.code]) this[map[e.code]] = false; });
     addEventListener("blur", () => this.clear());
@@ -62,17 +72,52 @@ const Build = {
   },
   selectAnimal(id, isMove = false, orig = null) {
     this.placing = { id, isMove, orig };
-    if (orig) { // reprend la taille/nombre existants
+    if (orig) { // reprend la taille/nombre/position existants
       this.sizeIdx = this._sizeIdxOf(orig.w, orig.h);
       this.count = orig.count || 1;
+      this.ex = orig.ex; this.ey = orig.ey;
+    } else {
+      // l'aperçu démarre au centre de la vue
+      this.ex = Math.round((this.cam.x + Game.cssW / 2) / CFG.TILE - this.w / 2);
+      this.ey = Math.round((this.cam.y + Game.cssH / 2) / CFG.TILE - this.h / 2);
     }
+    this._clampGhost();
     UI.showPlacingBar(ANIMALS.find((a) => a.id === id), isMove);
   },
   _sizeIdxOf(w, h) {
     for (let i = 0; i < this.SIZES.length; i++) if (this.SIZES[i][0] === w && this.SIZES[i][1] === h) return i;
     return 1;
   },
-  changeSize(d) { this.sizeIdx = clamp(this.sizeIdx + d, 0, this.SIZES.length - 1); UI.updatePlaceControls(); },
+  _clampGhost() {
+    this.ex = clamp(this.ex, 1, World.TW - 1 - this.w);
+    this.ey = clamp(this.ey, 1, World.TH - 1 - this.h);
+    this.ok = World.canPlace(this.ex, this.ey, this.w, this.h);
+  },
+  // place l'aperçu sous le pointeur (souris/doigt)
+  setCursorWorld(wx, wy) {
+    if (!this.placing) return;
+    this.ex = Math.round(wx / CFG.TILE - this.w / 2);
+    this.ey = Math.round(wy / CFG.TILE - this.h / 2);
+    this._clampGhost();
+  },
+  // déplace l'aperçu au clavier + suit avec la caméra
+  nudge(dx, dy) {
+    if (!this.placing) return;
+    this.ex += dx; this.ey += dy;
+    this._clampGhost();
+    this._followCam();
+  },
+  _followCam() {
+    const TILE = CFG.TILE, m = TILE * 2;
+    const gx = (this.ex + this.w / 2) * TILE, gy = (this.ey + this.h / 2) * TILE;
+    if (gx < this.cam.x + m) this.cam.x = gx - m;
+    if (gx > this.cam.x + Game.cssW - m) this.cam.x = gx - Game.cssW + m;
+    if (gy < this.cam.y + m) this.cam.y = gy - m;
+    if (gy > this.cam.y + Game.cssH - m) this.cam.y = gy - Game.cssH + m;
+    this.cam.x = clamp(this.cam.x, 0, Math.max(0, World.W - Game.cssW));
+    this.cam.y = clamp(this.cam.y, 0, Math.max(0, World.H - Game.cssH));
+  },
+  changeSize(d) { this.sizeIdx = clamp(this.sizeIdx + d, 0, this.SIZES.length - 1); this._clampGhost(); UI.updatePlaceControls(); },
   changeCount(d) { this.count = clamp(this.count + d, 1, this.MAX_COUNT); UI.updatePlaceControls(); },
   recenter() {
     this.cam.x = clamp(Player.x - Game.cssW / 2, 0, Math.max(0, World.W - Game.cssW));
@@ -162,31 +207,48 @@ const Game = {
     }
     UI.updateProgress();
 
-    // Pointeur : en jeu = ouvrir un enclos ; en construction = glisser/sélectionner
+    // Coordonnées monde sous le pointeur
+    const worldAt = (ev) => {
+      const r = canvas.getBoundingClientRect();
+      return { wx: ev.clientX - r.left + this.cam.x, wy: ev.clientY - r.top + this.cam.y };
+    };
+    // Pointeur :
+    //  - en jeu : toucher un enclos l'ouvre
+    //  - construction + placement : l'aperçu suit le pointeur, le relâcher pose
+    //  - construction + palette : glisser = déplacer la carte, toucher un enclos = le saisir
     let down = null;
     canvas.addEventListener("pointerdown", (ev) => {
       AudioEngine.resume();
       down = { x: ev.clientX, y: ev.clientY, moved: false, camx: Build.cam.x, camy: Build.cam.y };
+      if (Build.active && Build.placing) { const { wx, wy } = worldAt(ev); Build.setCursorWorld(wx, wy); }
     });
     canvas.addEventListener("pointermove", (ev) => {
+      // souris : l'aperçu suit même sans bouton pressé
+      if (Build.active && Build.placing && (down || ev.pointerType === "mouse")) {
+        const { wx, wy } = worldAt(ev); Build.setCursorWorld(wx, wy);
+      }
       if (!down) return;
       const dx = ev.clientX - down.x, dy = ev.clientY - down.y;
       if (Math.abs(dx) + Math.abs(dy) > 6) down.moved = true;
-      if (Build.active) { Build.cam.x = clamp(down.camx - dx, 0, Math.max(0, World.W - this.cssW)); Build.cam.y = clamp(down.camy - dy, 0, Math.max(0, World.H - this.cssH)); }
+      // pan uniquement quand on n'est PAS en train de placer
+      if (Build.active && !Build.placing) {
+        Build.cam.x = clamp(down.camx - dx, 0, Math.max(0, World.W - this.cssW));
+        Build.cam.y = clamp(down.camy - dy, 0, Math.max(0, World.H - this.cssH));
+      }
     });
     const endTap = (ev) => {
       if (!down) return;
       const tap = !down.moved;
-      const r = canvas.getBoundingClientRect();
-      if (tap) {
-        if (Build.active) {
-          const wx = ev.clientX - r.left + Build.cam.x, wy = ev.clientY - r.top + Build.cam.y;
-          Build.pickAt(wx, wy);
-        } else {
-          const wx = ev.clientX - r.left + this.cam.x, wy = ev.clientY - r.top + this.cam.y;
-          const enc = World.enclosureAt(wx, wy);
-          if (enc) UI.openAnimal(enc);
-        }
+      const { wx, wy } = worldAt(ev);
+      if (Build.active && Build.placing) {
+        // poser l'enclos là où on a relâché (tap ou glisser-déposer)
+        Build.setCursorWorld(wx, wy);
+        Build.confirm();
+      } else if (Build.active) {
+        if (tap) Build.pickAt(wx, wy);   // saisir un enclos existant
+      } else if (tap) {
+        const enc = World.enclosureAt(wx, wy);
+        if (enc) UI.openAnimal(enc);
       }
       down = null;
     };
@@ -218,8 +280,7 @@ const Game = {
     this.last = t;
 
     if (Build.active) {
-      // construction : caméra libre, joueur figé
-      Build.updateGhost();
+      // construction : caméra libre, joueur figé ; l'aperçu suit le pointeur/clavier
       this.cam.x = Build.cam.x; this.cam.y = Build.cam.y;
       this.near = null;
     } else {
@@ -257,14 +318,10 @@ const Game = {
     ctx.translate(-this.cam.x, -this.cam.y);
     World.render(ctx, this.cam, this.cssW, this.cssH, t);
     if (Build.active) {
+      Player.draw(ctx, t); // visible (figé) pour se repérer / "centrer sur moi"
       if (Build.placing) {
         World.drawGhost(ctx, Build.ex, Build.ey, Build.w, Build.h, Build.count, Build.ok, ANIMALS.find((a) => a.id === Build.placing.id), t);
       }
-      // viseur central
-      ctx.strokeStyle = "rgba(255,255,255,.85)"; ctx.lineWidth = 2;
-      const cxp = this.cam.x + this.cssW / 2, cyp = this.cam.y + this.cssH / 2;
-      ctx.beginPath(); ctx.moveTo(cxp - 12, cyp); ctx.lineTo(cxp + 12, cyp);
-      ctx.moveTo(cxp, cyp - 12); ctx.lineTo(cxp, cyp + 12); ctx.stroke();
     } else {
       this._highlightNear(ctx, t);
       Player.draw(ctx, t);
@@ -278,7 +335,7 @@ const Game = {
     ctx.save();
     ctx.strokeStyle = "rgba(255,215,80," + (0.55 + 0.35 * Math.sin(t / 200)) + ")";
     ctx.lineWidth = 4;
-    roundRect(ctx, e.ex * CFG.TILE + 2, e.ey * CFG.TILE + 2, CFG.ENC_W * CFG.TILE - 4, CFG.ENC_H * CFG.TILE - 4, 14);
+    roundRect(ctx, e.ex * CFG.TILE + 2, e.ey * CFG.TILE + 2, e.w * CFG.TILE - 4, e.h * CFG.TILE - 4, 14);
     ctx.stroke();
     ctx.restore();
   },

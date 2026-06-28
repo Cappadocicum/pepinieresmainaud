@@ -176,10 +176,11 @@ const World = {
       if (t === T_WATER) this.bridgeSet.add(x + "," + y);
       else this.pathSet.add(x + "," + y);
     };
+    // chemin de terre fin (1 case de large)
     let x = a.x; const sx = a.x <= b.x ? 1 : -1;
-    while (x !== b.x) { lay(x, a.y); lay(x, a.y + 1); x += sx; }
+    while (x !== b.x) { lay(x, a.y); x += sx; }
     let y = a.y; const sy = a.y <= b.y ? 1 : -1;
-    while (y !== b.y) { lay(b.x, y); lay(b.x + 1, y); y += sy; }
+    while (y !== b.y) { lay(b.x, y); y += sy; }
     lay(b.x, b.y);
   },
 
