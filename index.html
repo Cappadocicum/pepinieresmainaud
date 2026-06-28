@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#6fb845" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Le Zoo de Lucas &amp; Logan</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Écran de chargement / démarrage -->
+  <div id="splash">
+    <div class="splash-card">
+      <div class="splash-emoji">🦁🐼🐯</div>
+      <h1>Le Zoo de<br />Lucas &amp; Logan</h1>
+      <p>Promène-toi dans le zoo, enregistre la voix rigolote de chaque animal,<br />puis écoute-les quand tu passes à côté&nbsp;!</p>
+      <button id="startBtn" class="big-btn">▶️ Jouer</button>
+      <p class="hint">Déplacement&nbsp;: flèches / ZQSD ou la croix tactile.<br />Touche un animal pour enregistrer sa voix.</p>
+    </div>
+  </div>
+
+  <!-- Jeu -->
+  <canvas id="game"></canvas>
+
+  <!-- Barre du haut -->
+  <header id="hud">
+    <div class="title">🦁 Zoo de Lucas &amp; Logan</div>
+    <div class="hud-right">
+      <div id="progress" class="progress">0/50 voix</div>
+      <button id="cacoBtn" class="icon-btn" title="Tout faire crier en même temps">📢</button>
+      <button id="gearBtn" class="icon-btn" title="Réglages">⚙️</button>
+    </div>
+  </header>
+
+  <!-- Indice "appuie pour interagir" -->
+  <div id="nearHint" class="near-hint hidden"></div>
+
+  <!-- Contrôles tactiles -->
+  <div id="dpad" class="dpad">
+    <button class="dbtn up" data-dir="up">▲</button>
+    <button class="dbtn left" data-dir="left">◀</button>
+    <button class="dbtn right" data-dir="right">▶</button>
+    <button class="dbtn down" data-dir="down">▼</button>
+  </div>
+  <button id="actionBtn" class="action-btn">🎤</button>
+
+  <!-- Panneau animal -->
+  <div id="animalPanel" class="panel hidden">
+    <div class="panel-card">
+      <button class="close" data-close>✕</button>
+      <div class="animal-head">
+        <div id="apEmoji" class="animal-emoji">🐐</div>
+        <div>
+          <div id="apName" class="animal-name">Chèvre</div>
+          <div id="apTier" class="animal-tier">Ferme · Facile</div>
+        </div>
+      </div>
+      <div id="apStatus" class="status">Pas encore de voix 🎤</div>
+
+      <div class="rec-row">
+        <button id="recBtn" class="rec-btn">🎤 Enregistrer</button>
+        <button id="playBtn" class="ghost-btn" disabled>▶️ Écouter</button>
+        <button id="delBtn" class="ghost-btn danger" disabled>🗑️ Effacer</button>
+      </div>
+      <div id="recTimer" class="rec-timer hidden">● 0,0 s</div>
+      <p class="tip">Astuce&nbsp;: imagine une voix complètement improbable et rigolote&nbsp;! 😄</p>
+    </div>
+  </div>
+
+  <!-- Panneau réglages -->
+  <div id="settingsPanel" class="panel hidden">
+    <div class="panel-card">
+      <button class="close" data-close>✕</button>
+      <h2>⚙️ Réglages</h2>
+
+      <label class="setting-row">
+        <span>📢 Tout faire crier en même temps<br /><small>Cacophonie volontaire&nbsp;: toutes les voix tournent en boucle.</small></span>
+        <input type="checkbox" id="setCaco" />
+      </label>
+
+      <label class="setting-row col">
+        <span>🔊 Volume général&nbsp;: <b id="volVal">90%</b></span>
+        <input type="range" id="setVol" min="0" max="100" value="90" />
+      </label>
+
+      <label class="setting-row col">
+        <span>📏 Distance de déclenchement&nbsp;: <b id="radVal">3 cases</b></span>
+        <input type="range" id="setRad" min="1.5" max="6" step="0.5" value="3" />
+      </label>
+
+      <div class="setting-row">
+        <span>🗑️ Tout effacer<br /><small>Supprime toutes les voix enregistrées.</small></span>
+        <button id="resetBtn" class="ghost-btn danger">Effacer tout</button>
+      </div>
+
+      <p class="tip">Le jeu se joue mieux avec le son activé et le téléphone à l'horizontale. Tout est sauvegardé sur l'appareil&nbsp;: rien n'est envoyé sur internet. 🔒</p>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- audio caché pour l'aperçu dans le panneau -->
+  <audio id="previewAudio"></audio>
+
+  <script src="js/config.js"></script>
+  <script src="js/animals.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/world.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>

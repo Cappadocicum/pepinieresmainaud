@@ -1,0 +1,14 @@
+{
+  "name": "Le Zoo de Lucas & Logan",
+  "short_name": "Zoo L&L",
+  "description": "Un petit zoo où l'on enregistre la voix rigolote de chaque animal.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#4f9a36",
+  "theme_color": "#6fb845",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
