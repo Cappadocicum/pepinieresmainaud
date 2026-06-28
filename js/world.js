@@ -35,8 +35,11 @@ const World = {
     this.tiles = new Uint8Array(this.TW * this.TH);
 
     // Rivières qui serpentent (laissent un large open-space)
+    this.fixedBridges = new Set();
     this._carveRiverV(Math.floor(this.TW * 0.30));
     this._carveRiverH(Math.floor(this.TH * 0.58));
+    // Ponts permanents pour pouvoir toujours traverser les rivières
+    this._addRiverBridges();
 
     // Falaises rocheuses (plateaux infranchissables) façon Zelda
     this._cliffFormations(5);
@@ -197,6 +200,62 @@ const World = {
       y = clamp(y, 3, this.TH - 5);
     }
   },
+  // Ponts permanents : on cherche des traversées nettes (terre–eau–terre)
+  // et on pose un tablier de pont en travers, espacés le long des rivières.
+  _addRiverBridges() {
+    const isW = (x, y) => this.get(x, y) === T_WATER;
+    const setB = (x, y) => { if (this.inB(x, y)) this.fixedBridges.add(x + "," + y); };
+
+    // Traversées horizontales (par-dessus une rivière verticale) : terre|eau..|terre
+    const hCols = [];
+    for (let y = 3; y < this.TH - 3; y++) {
+      for (let x = 2; x < this.TW - 3; x++) {
+        if (isW(x, y) && !isW(x - 1, y)) {
+          let x2 = x; while (x2 < this.TW - 1 && isW(x2, y)) x2++;
+          const len = x2 - x;
+          if (len >= 1 && len <= 4 && !isW(x2, y)) { hCols.push({ y, x0: x, x1: x2 - 1 }); break; }
+        }
+      }
+    }
+    // Traversées verticales (par-dessus une rivière horizontale)
+    const vRows = [];
+    for (let x = 3; x < this.TW - 3; x++) {
+      for (let y = 2; y < this.TH - 3; y++) {
+        if (isW(x, y) && !isW(x, y - 1)) {
+          let y2 = y; while (y2 < this.TH - 1 && isW(x, y2)) y2++;
+          const len = y2 - y;
+          if (len >= 1 && len <= 4 && !isW(x, y2)) { vRows.push({ x, y0: y, y1: y2 - 1 }); break; }
+        }
+      }
+    }
+
+    // garde ~1 traversée toutes les ~14 cases
+    const pick = (arr, key) => {
+      const out = []; let last = -999;
+      for (const c of arr) { if (c[key] - last >= 14) { out.push(c); last = c[key]; } }
+      return out;
+    };
+    // tablier de 2 cases de large, posé uniquement sur l'eau
+    for (const c of pick(hCols, "y"))
+      for (let dy = 0; dy <= 1; dy++)
+        for (let x = c.x0 - 1; x <= c.x1 + 1; x++) if (isW(x, c.y + dy)) setB(x, c.y + dy);
+    for (const c of pick(vRows, "x"))
+      for (let dx = 0; dx <= 1; dx++)
+        for (let y = c.y0 - 1; y <= c.y1 + 1; y++) if (isW(c.x + dx, y)) setB(c.x + dx, y);
+  },
+
+  // Garde-corps du pont du côté de l'eau ouverte
+  _bridgeRails(ctx, tx, ty) {
+    const TILE = CFG.TILE, x = tx * TILE, y = ty * TILE;
+    ctx.strokeStyle = "#6f4420"; ctx.lineWidth = 3;
+    ctx.beginPath();
+    if (this._openWater(tx, ty - 1)) { ctx.moveTo(x, y + 2.5); ctx.lineTo(x + TILE, y + 2.5); }
+    if (this._openWater(tx, ty + 1)) { ctx.moveTo(x, y + TILE - 2.5); ctx.lineTo(x + TILE, y + TILE - 2.5); }
+    if (this._openWater(tx - 1, ty)) { ctx.moveTo(x + 2.5, y); ctx.lineTo(x + 2.5, y + TILE); }
+    if (this._openWater(tx + 1, ty)) { ctx.moveTo(x + TILE - 2.5, y); ctx.lineTo(x + TILE - 2.5, y + TILE); }
+    ctx.stroke();
+  },
+
   _cliffFormations(n) {
     for (let i = 0; i < n; i++) {
       const w = 3 + this._ri(4), h = 2 + this._ri(3);
@@ -255,7 +314,7 @@ const World = {
     if (this.encSolid.has(x + "," + y)) return true;
     const t = this.tiles[this.idx(x, y)];
     if (t === T_TREE || t === T_CLIFF) return true;
-    if (t === T_WATER) return !this.bridgeSet.has(x + "," + y);
+    if (t === T_WATER) return !this._isBridge(x, y);
     return false;
   },
   isSolidPx(px, py) {
@@ -302,13 +361,14 @@ const World = {
       for (let tx = x0; tx < x1; tx++) {
         const key = tx + "," + ty;
         const type = this.tiles[this.idx(tx, ty)];
-        let name;
-        if (type === T_WATER) name = this.bridgeSet.has(key) ? "bridge" : "water";
+        let name, bridge = false;
+        if (type === T_WATER) { bridge = this._isBridge(tx, ty); name = bridge ? "bridge" : "water"; }
         else if (type === T_CLIFF) name = "cliff";
         else name = (type !== T_TREE && this.pathSet.has(key)) ? "path" : "grass";
         const pat = Images.pattern(ctx, name);
         ctx.fillStyle = pat || this._tileColor(name);
         ctx.fillRect(tx * TILE, ty * TILE, TILE + 1, TILE + 1);
+        if (bridge) this._bridgeRails(ctx, tx, ty);
       }
     }
     // 1b) Bords d'eau (côtes) + faces de falaise façon Zelda
@@ -351,8 +411,7 @@ const World = {
     ctx.lineWidth = 3;
     for (let ty = y0; ty < y1; ty++) {
       for (let tx = x0; tx < x1; tx++) {
-        const key = tx + "," + ty;
-        if (this.tiles[this.idx(tx, ty)] !== T_WATER || this.bridgeSet.has(key)) continue;
+        if (this.tiles[this.idx(tx, ty)] !== T_WATER || this._isBridge(tx, ty)) continue;
         const x = tx * TILE, y = ty * TILE;
         const N = !this._isWater(tx, ty - 1), S = !this._isWater(tx, ty + 1);
         const We = !this._isWater(tx - 1, ty), E = !this._isWater(tx + 1, ty);
@@ -377,11 +436,13 @@ const World = {
     // coins arrondis (auto-tiling)
     for (let ty = y0; ty < y1; ty++)
       for (let tx = x0; tx < x1; tx++) {
-        if (this.tiles[this.idx(tx, ty)] === T_WATER && !this.bridgeSet.has(tx + "," + ty))
+        if (this.tiles[this.idx(tx, ty)] === T_WATER && !this._isBridge(tx, ty))
           this._roundCorners(ctx, tx, ty, (a, b2) => this._isWater(a, b2), TILE * 0.5, "#1c5fa6");
       }
   },
   _isWater(x, y) { return this.get(x, y) === T_WATER; },
+  _isBridge(x, y) { const k = x + "," + y; return this.fixedBridges.has(k) || this.bridgeSet.has(k); },
+  _openWater(x, y) { return this._isWater(x, y) && !this._isBridge(x, y); },
   _isCliff(x, y) { return this.get(x, y) === T_CLIFF; },
   _grassFill(ctx) { return Images.pattern(ctx, "grass") || "#46b446"; },
 
