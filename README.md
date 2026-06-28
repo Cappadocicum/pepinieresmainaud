@@ -66,10 +66,12 @@ envoyée sur internet — tout reste sur l'appareil).
 
 ## 🛠️ Détails techniques
 
-- 100 % HTML / CSS / JavaScript, **aucune dépendance**, aucun build.
-- Carte et personnage dessinés sur `<canvas>`. Les vignettes des animaux
-  sont de gros **emoji** sur des cartes colorées (joli, lisible pour les
-  enfants, fonctionne hors-ligne et sans clé API).
+- 100 % HTML / CSS / JavaScript côté jeu, **aucune dépendance à l'exécution**,
+  aucun build.
+- Carte et personnage dessinés sur `<canvas>`. Les **portraits des 50 animaux**,
+  les **textures de sol** et les **décors** sont des images générées par IA
+  (Gemini) et stockées dans `assets/`. Si ces images sont absentes, le jeu
+  retombe automatiquement sur des emoji et des couleurs unies.
 - Enregistrement via `MediaRecorder`, lecture par proximité via la
   Web Audio API (volume + panoramique selon la position).
 
@@ -80,9 +82,13 @@ index.html              écran de jeu + panneaux
 styles.css              style "jeu pour enfants"
 icon.svg                icône de l'appli
 manifest.webmanifest    appli installable (PWA)
+netlify.toml            config de déploiement Netlify
 sw.js                   cache hors-ligne
+assets/                 images générées (portraits, textures, décors) + manifest
+scripts/generate-visuals.mjs   (re)génération des images via Gemini
 js/config.js            réglages de la carte
 js/animals.js           la liste des 50 animaux
+js/images.js            chargement des images générées (avec repli emoji)
 js/storage.js           sauvegarde (IndexedDB + localStorage)
 js/audio.js             enregistrement + lecture par proximité / cacophonie
 js/world.js             génération et rendu du zoo
@@ -90,5 +96,42 @@ js/player.js            le personnage
 js/ui.js                panneaux, enregistrement, réglages
 js/game.js              boucle de jeu, caméra, entrées
 ```
+
+## 🚀 Déployer sur Netlify (recommandé)
+
+Netlify sert le site en **HTTPS**, ce qui est nécessaire pour le micro et pour
+l'installation en appli (PWA). Le repo est déjà prêt (`netlify.toml`).
+
+1. Va sur [app.netlify.com](https://app.netlify.com) → **Add new site** →
+   **Import an existing project** → **GitHub**.
+2. Autorise Netlify puis choisis le dépôt `cappadocicum/pepinieresmainaud`.
+3. Sélectionne la branche `claude/lucas-logan-zoo-game-9hvtb4`
+   (ou fusionne-la dans `main` et choisis `main`).
+4. Laisse les réglages par défaut (aucune commande de build, dossier de
+   publication `.`) → **Deploy**.
+5. Tu obtiens une URL en `https://…netlify.app`. Ouvre-la sur le téléphone,
+   puis **« Ajouter à l'écran d'accueil »** pour une vraie appli plein écran.
+
+> Chaque `git push` sur la branche connectée redéploie automatiquement.
+> Alternative express sans GitHub : glisse le dossier du projet sur
+> [app.netlify.com/drop](https://app.netlify.com/drop).
+
+## 🎨 (Re)générer les visuels avec Gemini
+
+Les images sont déjà incluses dans `assets/`. Pour les régénérer (autre style,
+nouveaux animaux, etc.) :
+
+```bash
+npm install                                   # installe sharp (génération uniquement)
+export GEMINI_API_KEY="votre_cle_google_ai"   # clé Google AI Studio
+npm run generate                              # 50 animaux + 4 textures + 3 décors
+# options : --limit N | --only animaux|textures|props | --force
+```
+
+Le script `scripts/generate-visuals.mjs` appelle le modèle
+`gemini-2.5-flash-image`, détoure le fond des portraits (transparence) et
+redimensionne/compresse les images, puis met à jour `assets/manifest.json`.
+La clé n'est lue que depuis la variable d'environnement et n'est jamais écrite
+sur le disque.
 
 Bon zoo, et bonnes voix rigolotes ! 🐮🐷🐸🦒

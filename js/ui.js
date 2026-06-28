@@ -85,7 +85,9 @@ const UI = {
   openAnimal(enc) {
     this.cur = enc;
     const a = enc.animal;
-    this.el.apEmoji.textContent = a.emoji;
+    const img = Images.animal(a.id);
+    if (img) this.el.apEmoji.innerHTML = '<img src="' + img.src + '" alt="" style="width:64px;height:64px;object-fit:contain">';
+    else this.el.apEmoji.textContent = a.emoji;
     this.el.apName.textContent = a.name;
     this.el.apTier.textContent = TIERS[a.tier].label;
     this.refreshAnimal();

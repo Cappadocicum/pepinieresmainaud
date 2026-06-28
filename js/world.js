@@ -39,7 +39,12 @@ const World = {
         const dx = (e.ex + ox) * TILE + TILE / 2;
         const dy = (e.ey - 0.4) * TILE;
         const ch = choices[Math.floor(rnd() * choices.length)];
-        this.decos.push({ x: dx, y: dy, e: ch, s: ch.length > 2 || ["🌳","🌲","🌴"].includes(ch) ? 40 : 26 });
+        const propMap = { "🌳": "arbre", "🌲": "arbre", "🌴": "arbre", "🪨": "rocher" };
+        this.decos.push({
+          x: dx, y: dy, e: ch,
+          prop: propMap[ch] || null,
+          s: ["🌳","🌲","🌴"].includes(ch) ? 40 : 26,
+        });
       }
     });
   },
@@ -75,16 +80,21 @@ const World = {
     const { TILE } = CFG;
     const cw = vw, ch = vh;
 
-    // Pelouse de base (damier)
-    const x0 = Math.floor(cam.x / TILE) - 1;
-    const y0 = Math.floor(cam.y / TILE) - 1;
-    const x1 = Math.ceil((cam.x + cw) / TILE) + 1;
-    const y1 = Math.ceil((cam.y + ch) / TILE) + 1;
-    for (let ty = y0; ty < y1; ty++) {
-      for (let tx = x0; tx < x1; tx++) {
-        const dark = (tx + ty) % 2 === 0;
-        ctx.fillStyle = dark ? "#79c34d" : "#86cf57";
-        ctx.fillRect(tx * TILE, ty * TILE, TILE, TILE);
+    // Pelouse de base : texture générée si dispo, sinon damier
+    const grassPat = Images.pattern(ctx, "grass");
+    if (grassPat) {
+      ctx.fillStyle = grassPat;
+      ctx.fillRect(cam.x, cam.y, cw, ch);
+    } else {
+      const x0 = Math.floor(cam.x / TILE) - 1;
+      const y0 = Math.floor(cam.y / TILE) - 1;
+      const x1 = Math.ceil((cam.x + cw) / TILE) + 1;
+      const y1 = Math.ceil((cam.y + ch) / TILE) + 1;
+      for (let ty = y0; ty < y1; ty++) {
+        for (let tx = x0; tx < x1; tx++) {
+          ctx.fillStyle = (tx + ty) % 2 === 0 ? "#79c34d" : "#86cf57";
+          ctx.fillRect(tx * TILE, ty * TILE, TILE, TILE);
+        }
       }
     }
 
@@ -93,8 +103,13 @@ const World = {
     ctx.textBaseline = "alphabetic";
     for (const d of this.decos) {
       if (d.x < cam.x - 60 || d.x > cam.x + cw + 60 || d.y < cam.y - 60 || d.y > cam.y + ch + 60) continue;
-      ctx.font = d.s + 'px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif';
-      ctx.fillText(d.e, d.x, d.y);
+      const propImg = d.prop ? Images.decor(d.prop) : null;
+      if (propImg) {
+        ctx.drawImage(propImg, d.x - 30, d.y - 52, 60, 60);
+      } else {
+        ctx.font = d.s + 'px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif';
+        ctx.fillText(d.e, d.x, d.y);
+      }
     }
 
     // Enclos visibles
@@ -112,19 +127,24 @@ const World = {
     const w = ENC_W * TILE, h = ENC_H * TILE;
     const a = e.animal;
 
-    // Sol thématique
+    // Sol thématique : texture générée si dispo, sinon couleur + motifs
+    const pat = Images.pattern(ctx, a.ground);
     roundRect(ctx, x + 5, y + 5, w - 10, h - 10, 12);
-    ctx.fillStyle = this.groundColors(a.ground, false);
-    ctx.fill();
-    // petits motifs
-    ctx.fillStyle = this.groundColors(a.ground, true);
-    for (let i = 0; i < 6; i++) {
-      const px = x + 16 + ((i * 53) % (w - 30));
-      const py = y + 16 + ((i * 37) % (h - 30));
-      ctx.globalAlpha = 0.5;
-      ctx.beginPath(); ctx.arc(px, py, 4, 0, 7); ctx.fill();
+    if (pat) {
+      ctx.fillStyle = pat;
+      ctx.fill();
+    } else {
+      ctx.fillStyle = this.groundColors(a.ground, false);
+      ctx.fill();
+      ctx.fillStyle = this.groundColors(a.ground, true);
+      for (let i = 0; i < 6; i++) {
+        const px = x + 16 + ((i * 53) % (w - 30));
+        const py = y + 16 + ((i * 37) % (h - 30));
+        ctx.globalAlpha = 0.5;
+        ctx.beginPath(); ctx.arc(px, py, 4, 0, 7); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
     }
-    ctx.globalAlpha = 1;
 
     // Clôture en bois
     roundRect(ctx, x + 5, y + 5, w - 10, h - 10, 12);
@@ -139,18 +159,26 @@ const World = {
     const posts = [[x + 5, y + 5], [x + w - 5, y + 5], [x + 5, y + h - 5], [x + w - 5, y + h - 5]];
     for (const [px, py] of posts) { ctx.beginPath(); ctx.arc(px, py, 6, 0, 7); ctx.fill(); }
 
-    // Animal
+    // Animal : portrait généré si dispo, sinon emoji
     const has = AudioEngine.has(a.id);
     const playing = has && AudioEngine.isPlaying(a.id);
     const bob = Math.sin(t / 420 + e.ex) * 3 + (playing ? Math.sin(t / 80) * 2 : 0);
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.globalAlpha = has ? 1 : 0.45;
-    ctx.font = Math.floor(TILE * 1.95) + 'px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif';
-    ctx.fillText(a.emoji, e.cx, e.cy - bob);
+    const img = Images.animal(a.id);
+    ctx.globalAlpha = has ? 1 : 0.5;
+    if (img) {
+      const size = TILE * 2.6;
+      ctx.drawImage(img, e.cx - size / 2, e.cy - size / 2 - bob, size, size);
+    } else {
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.font = Math.floor(TILE * 1.95) + 'px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif';
+      ctx.fillText(a.emoji, e.cx, e.cy - bob);
+    }
     ctx.globalAlpha = 1;
 
     // Badge état
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
     if (!has) {
       ctx.font = '22px "Segoe UI Emoji",sans-serif';
       ctx.fillText("🎤", e.cx + w / 2 - 22, e.cy - h / 2 + 22);

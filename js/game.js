@@ -46,6 +46,7 @@ const Game = {
 
     await Store.open();
     Settings.load();
+    await Images.load();   // portraits + textures générés (sinon repli emoji)
     World.build();
     Player.spawn();
     Input.bind();

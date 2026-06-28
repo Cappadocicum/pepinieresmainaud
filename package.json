@@ -1,0 +1,14 @@
+{
+  "name": "zoo-luca-logan",
+  "version": "1.0.0",
+  "description": "Le Zoo de Luca & Logan — petit jeu web pour enfants (PWA).",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "node scripts/generate-visuals.mjs",
+    "serve": "node -e \"import('http').then(()=>{})\" && npx --yes serve -l 8080 ."
+  },
+  "devDependencies": {
+    "sharp": "^0.33.0"
+  }
+}
