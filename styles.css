@@ -350,7 +350,32 @@ canvas#game {
 }
 .place-info { font-size: 18px; }
 .place-info b { color: var(--ink); }
-.place-hint { font-size: 12px; opacity: .7; margin: 4px 0 8px; }
+.place-controls { display: flex; gap: 10px; justify-content: center; margin: 8px 0 2px; flex-wrap: wrap; }
+.ctrl { display: flex; align-items: center; gap: 6px; background: #fff; border-radius: 12px; padding: 4px 8px; }
+.ctrl-label { font-size: 12px; opacity: .7; font-weight: 700; }
+.ctrl b { min-width: 52px; text-align: center; color: var(--green-d); font-size: 14px; }
+.step { width: 34px; height: 34px; border: none; border-radius: 10px; background: #eef3e8; font-size: 16px; cursor: pointer; }
+.step:active { transform: translateY(1px); background: var(--gold); }
+.place-hint { font-size: 12px; opacity: .7; margin: 6px 0 8px; }
+
+.recenter-btn {
+  position: fixed;
+  right: 16px;
+  bottom: 120px;
+  bottom: max(120px, calc(env(safe-area-inset-bottom) + 96px));
+  z-index: 32;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  border: none;
+  background: #ffffffe0;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #0003;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+body.building .recenter-btn { display: flex; }
 .place-actions { display: flex; gap: 8px; align-items: center; }
 .place-actions .ghost-btn { flex: 0 0 auto; padding: 12px 14px; }
 .place-actions .rec-btn { flex: 1; padding: 12px; font-size: 18px; }

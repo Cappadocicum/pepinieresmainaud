@@ -70,9 +70,9 @@ const Zoo = {
     catch (e) { this.placements = []; }
   },
   save() { localStorage.setItem("zoo-placements", JSON.stringify(this.placements)); },
-  place(id, ex, ey) {
+  place(id, ex, ey, w, h, count) {
     this.placements = this.placements.filter((p) => p.id !== id);
-    this.placements.push({ id, ex, ey });
+    this.placements.push({ id, ex, ey, w, h, count });
     this.save();
   },
   remove(id) { this.placements = this.placements.filter((p) => p.id !== id); this.save(); },

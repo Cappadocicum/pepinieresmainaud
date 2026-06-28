@@ -49,12 +49,14 @@ Le zoo démarre **vide** : c'est toi qui places les enclos !
 1. Appuie sur **🏗️** en haut à droite → la **palette des 50 animaux**
    apparaît.
 2. Touche l'animal voulu → un **aperçu d'enclos** apparaît au centre.
-3. **Fais glisser la carte** pour viser l'endroit (vert = OK, rouge = occupé),
-   puis **✓ Placer ici**.
-4. Le **sentier de terre se dessine tout seul** entre les enclos posés (avec
+3. Choisis la **Taille** (Petit → Géant) et le **Nombre** d'animaux dans
+   l'enclos (jusqu'à 8 du même animal).
+4. **Fais glisser la carte** pour viser l'endroit (vert = OK, rouge = occupé),
+   puis **✓ Placer ici**. Le bouton **🎯** recentre la vue sur ton personnage.
+5. Le **sentier de terre se dessine tout seul** entre les enclos posés (avec
    des **ponts** quand il traverse une rivière).
-5. Touche un enclos déjà posé pour le **déplacer** ou le **retirer** 🗑️.
-6. **✓ Terminé** pour repasser en mode promenade.
+6. Touche un enclos déjà posé pour le **déplacer** ou le **retirer** 🗑️.
+7. **✓ Terminé** pour repasser en mode promenade.
 
 ## 🎤 Les voix
 

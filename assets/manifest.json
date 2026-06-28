@@ -57,7 +57,8 @@
     "water",
     "snow",
     "path",
-    "bridge"
+    "bridge",
+    "cliff"
   ],
   "decors": [
     "arbre",

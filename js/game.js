@@ -37,6 +37,14 @@ const Build = {
   placing: null,      // { id, isMove, orig }
   cam: { x: 0, y: 0 },
   ex: 0, ey: 0, ok: false,
+  SIZES: [[4, 3], [5, 4], [6, 5], [8, 6]],
+  SIZE_NAMES: ["Petit", "Moyen", "Grand", "Géant"],
+  sizeIdx: 1,
+  count: 1,
+  MAX_COUNT: 8,
+
+  get w() { return this.SIZES[this.sizeIdx][0]; },
+  get h() { return this.SIZES[this.sizeIdx][1]; },
 
   toggle() { this.active ? this.exit() : this.enter(); },
   enter() {
@@ -54,7 +62,21 @@ const Build = {
   },
   selectAnimal(id, isMove = false, orig = null) {
     this.placing = { id, isMove, orig };
+    if (orig) { // reprend la taille/nombre existants
+      this.sizeIdx = this._sizeIdxOf(orig.w, orig.h);
+      this.count = orig.count || 1;
+    }
     UI.showPlacingBar(ANIMALS.find((a) => a.id === id), isMove);
+  },
+  _sizeIdxOf(w, h) {
+    for (let i = 0; i < this.SIZES.length; i++) if (this.SIZES[i][0] === w && this.SIZES[i][1] === h) return i;
+    return 1;
+  },
+  changeSize(d) { this.sizeIdx = clamp(this.sizeIdx + d, 0, this.SIZES.length - 1); UI.updatePlaceControls(); },
+  changeCount(d) { this.count = clamp(this.count + d, 1, this.MAX_COUNT); UI.updatePlaceControls(); },
+  recenter() {
+    this.cam.x = clamp(Player.x - Game.cssW / 2, 0, Math.max(0, World.W - Game.cssW));
+    this.cam.y = clamp(Player.y - Game.cssH / 2, 0, Math.max(0, World.H - Game.cssH));
   },
   cancelPlacing() {
     if (this.placing && this.placing.isMove) this._restore();
@@ -77,7 +99,7 @@ const Build = {
   },
   confirm() {
     if (!this.placing || !this.ok) { UI.toast("⛔ Emplacement impossible ici"); return; }
-    Zoo.place(this.placing.id, this.ex, this.ey);
+    Zoo.place(this.placing.id, this.ex, this.ey, this.w, this.h, this.count);
     World.applyPlacements(Zoo.placements);
     this.placing = null;
     UI.updateProgress();
@@ -87,9 +109,9 @@ const Build = {
   updateGhost() {
     if (!this.placing) return;
     const wx = this.cam.x + Game.cssW / 2, wy = this.cam.y + Game.cssH / 2;
-    this.ex = Math.round(wx / CFG.TILE - CFG.ENC_W / 2);
-    this.ey = Math.round(wy / CFG.TILE - CFG.ENC_H / 2);
-    this.ok = World.canPlace(this.ex, this.ey);
+    this.ex = Math.round(wx / CFG.TILE - this.w / 2);
+    this.ey = Math.round(wy / CFG.TILE - this.h / 2);
+    this.ok = World.canPlace(this.ex, this.ey, this.w, this.h);
   },
   pan(dx, dy) {
     this.cam.x = clamp(this.cam.x - dx, 0, Math.max(0, World.W - Game.cssW));
@@ -234,7 +256,7 @@ const Game = {
     World.render(ctx, this.cam, this.cssW, this.cssH, t);
     if (Build.active) {
       if (Build.placing) {
-        World.drawGhost(ctx, Build.ex, Build.ey, Build.ok, ANIMALS.find((a) => a.id === Build.placing.id), t);
+        World.drawGhost(ctx, Build.ex, Build.ey, Build.w, Build.h, Build.count, Build.ok, ANIMALS.find((a) => a.id === Build.placing.id), t);
       }
       // viseur central
       ctx.strokeStyle = "rgba(255,255,255,.85)"; ctx.lineWidth = 2;

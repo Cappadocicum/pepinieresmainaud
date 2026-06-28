@@ -34,14 +34,15 @@ function parseAnimals() {
   return out;
 }
 
-const STYLE = "cute funny cartoon mascot, big friendly expressive eyes, thick bold black outline, " +
-  "flat bright cel-shaded colors, playful children's comic / sticker style for a kids zoo game " +
-  "(audience 9-10 years old), head-and-shoulders portrait, centered, facing forward.";
+const STYLE = "16-bit SNES pixel art sprite, cute chibi full-body animal character, " +
+  "3/4 top-down view like a creature from The Legend of Zelda: A Link to the Past overworld, " +
+  "crisp clean pixels, bold dark outline, limited retro palette, adorable and a little silly, " +
+  "for a kids zoo game (audience 9-10 years old), facing the camera, centered.";
 const BG = "The character is placed on a clean uniform near-white (#f2f2f2) background, " +
   "with a clear empty margin all around the edges, no scenery, no frame, no border, no drop shadow, no text, no letters. Square image.";
 
 function animalPrompt(a) {
-  return `A ${STYLE} The animal is a ${a.name.toLowerCase()}. Make it adorable and a little silly. ${BG}`;
+  return `A ${STYLE} The animal is a ${a.name.toLowerCase()}. ${BG}`;
 }
 
 const TEX_STYLE = "16-bit SNES pixel art, top-down overworld ground tile in the exact style of " +
@@ -54,6 +55,7 @@ const TEXTURES = {
   snow:  `${TEX_STYLE} Clean white-blue snow.`,
   path:  `${TEX_STYLE} Light tan packed-earth dirt path with a few small pebbles.`,
   bridge:`${TEX_STYLE} Brown wooden plank bridge boards.`,
+  cliff: `${TEX_STYLE} Grey rocky cliff plateau top surface with a few cracks, classic Zelda overworld mountain rock.`,
 };
 
 const PROP_STYLE = "16-bit SNES pixel art top-down game object in the exact style of " +

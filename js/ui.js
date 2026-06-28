@@ -25,6 +25,13 @@ const UI = {
       placeConfirm: document.getElementById("placeConfirm"),
       placeCancel: document.getElementById("placeCancel"),
       placeDelete: document.getElementById("placeDelete"),
+      sizeMinus: document.getElementById("sizeMinus"),
+      sizePlus: document.getElementById("sizePlus"),
+      sizeVal: document.getElementById("sizeVal"),
+      countMinus: document.getElementById("countMinus"),
+      countPlus: document.getElementById("countPlus"),
+      countVal: document.getElementById("countVal"),
+      recenterBtn: document.getElementById("recenterBtn"),
       // panneau animal
       animalPanel: document.getElementById("animalPanel"),
       apEmoji: document.getElementById("apEmoji"),
@@ -61,6 +68,11 @@ const UI = {
     e.placeConfirm.onclick = () => Build.confirm();
     e.placeCancel.onclick = () => Build.cancelPlacing();
     e.placeDelete.onclick = () => Build.deletePlacing();
+    e.sizeMinus.onclick = () => Build.changeSize(-1);
+    e.sizePlus.onclick = () => Build.changeSize(1);
+    e.countMinus.onclick = () => Build.changeCount(-1);
+    e.countPlus.onclick = () => Build.changeCount(1);
+    e.recenterBtn.onclick = () => Build.recenter();
 
     document.querySelectorAll("[data-close]").forEach((b) => (b.onclick = () => this.closeAll()));
     [e.animalPanel, e.settingsPanel].forEach((p) =>
@@ -138,6 +150,11 @@ const UI = {
     this.el.placeEmoji.innerHTML = img ? '<img src="' + img.src + '" style="width:26px;height:26px;vertical-align:middle;object-fit:contain">' : animal.emoji;
     this.el.placeName.textContent = animal.name;
     this.el.placeDelete.classList.toggle("hidden", !isMove);
+    this.updatePlaceControls();
+  },
+  updatePlaceControls() {
+    this.el.sizeVal.textContent = Build.SIZE_NAMES[Build.sizeIdx];
+    this.el.countVal.textContent = "× " + Build.count;
   },
 
   // ---------- Panneau animal ----------

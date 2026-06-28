@@ -47,6 +47,7 @@
     <button class="dbtn down" data-dir="down">▼</button>
   </div>
   <button id="actionBtn" class="action-btn">🎤</button>
+  <button id="recenterBtn" class="recenter-btn" title="Centrer sur moi">🎯</button>
 
   <!-- Mode construction : palette d'animaux -->
   <div id="palette" class="palette hidden">
@@ -61,6 +62,20 @@
   <!-- Mode construction : barre de placement -->
   <div id="placeBar" class="place-bar hidden">
     <div class="place-info"><span id="placeEmoji"></span> <b id="placeName"></b></div>
+    <div class="place-controls">
+      <div class="ctrl">
+        <span class="ctrl-label">Taille</span>
+        <button id="sizeMinus" class="step">➖</button>
+        <b id="sizeVal">Moyen</b>
+        <button id="sizePlus" class="step">➕</button>
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-label">Nombre</span>
+        <button id="countMinus" class="step">➖</button>
+        <b id="countVal">1</b>
+        <button id="countPlus" class="step">➕</button>
+      </div>
+    </div>
     <div class="place-hint">Fais glisser la carte pour viser 👆 puis place l'enclos</div>
     <div class="place-actions">
       <button id="placeCancel" class="ghost-btn">✕</button>
