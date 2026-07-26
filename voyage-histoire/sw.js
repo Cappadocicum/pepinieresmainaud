@@ -1,7 +1,7 @@
 // Cache hors-ligne : l'appli et tout son contenu (fiches, lieux, idées)
 // fonctionnent sans connexion. Seuls la carte interactive et « autour de
 // moi » demandent internet.
-const CACHE = "tempo-v2";
+const CACHE = "tempo-v3";
 const FICHIERS = [
   "./",
   "index.html",
@@ -12,6 +12,7 @@ const FICHIERS = [
   "js/map.js",
   "js/app.js",
   "js/data/themes.js",
+  "js/data/art.js",
   "js/data/books.js",
   "js/data/activities.js",
   "js/data/places.js",

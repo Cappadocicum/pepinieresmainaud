@@ -23,6 +23,14 @@
   function themeCourant() { return window.THEMES[Store.moisCourant()]; }
   function cat(id) { return window.CATEGORIES.find(c => c.id === id); }
 
+  // Illustration dessinée d'un thème (js/data/art.js), repli sur l'emoji
+  function artSvg(slug) { return (window.ART || {})[slug] || ""; }
+  function medaillon(t, classe) {
+    const svg = artSvg(t.slug);
+    return '<div class="' + classe + '"' +
+      (svg ? ">" + svg : ' data-emoji="1"><span>' + t.emoji + "</span>") + "</div>";
+  }
+
   function faitDuJour(slug, jour) {
     const list = (window.FUNFACTS || {})[slug] || [];
     return list.find(f => f.j === jour) || list[0] || {
@@ -118,7 +126,7 @@
       '<h1 class="ob-titre">Bienvenue dans Tempo,<br>' + esc(s.prenom) + " !</h1>" +
       '<p class="ob-sous">Ton voyage dans l’Histoire commence<br>en <b>' + moisCalendaire(0) + "</b> avec…</p>" +
       '<div class="carte-theme pop" style="--c1:' + t.couleur + ";--c2:" + t.couleur2 + '">' +
-      '<div class="ct-emoji">' + t.emoji + '</div>' +
+      medaillon(t, "ct-medaille") +
       '<div class="ct-nom">' + t.nom + '</div>' +
       '<div class="ct-accroche">' + t.accroche + "</div></div>" +
       '<button class="btn-grand" onclick="location.hash=\'#home\'">Commencer l’aventure ✨</button>' +
@@ -150,7 +158,7 @@
       bandeau =
         '<a class="carte-theme large" href="#theme/' + i + '" style="--c1:' + t.couleur + ";--c2:" + t.couleur2 + '">' +
         '<div class="ct-mois">Mois ' + (i + 1) + " / 12 · " + moisCalendaire(i) + "</div>" +
-        '<div class="ct-emoji">' + t.emoji + '</div>' +
+        medaillon(t, "ct-medaille") +
         '<div class="ct-nom">' + t.nom + '</div>' +
         '<div class="ct-accroche">' + t.accroche + "</div>" +
         (choix
@@ -169,7 +177,9 @@
       bandeau +
       '<h2 class="titre-section">🃏 La carte du jour</h2>' +
       '<div class="carte-fait' + (dejaVue ? "" : " neuve") + '" id="carte-jour" style="--c1:' + t.couleur + ";--c2:" + t.couleur2 + '">' +
-      '<div class="cf-haut"><span class="cf-emoji">' + fait.e + '</span>' +
+      '<div class="cf-haut">' +
+      (artSvg(t.slug) ? '<div class="cf-fond" aria-hidden="true">' + artSvg(t.slug) + "</div>" : "") +
+      '<span class="cf-emoji">' + fait.e + '</span>' +
       '<span class="cf-jour">' + jour + " " + moisCalendaire(i).split(" ")[0] + "</span></div>" +
       '<div class="cf-bas"><div class="cf-titre">' + esc(fait.t) + '</div>' +
       '<div class="cf-texte">' + esc(fait.s) + "</div>" +
@@ -214,20 +224,27 @@
     const courant = Store.moisCourant();
     const s = Store.get();
     document.body.className = "fond-app";
+    // Tous les mois sont visibles (nom, période, illustration) ; ceux à venir
+    // restent cadenassés tant que le voyage n'y est pas arrivé.
     const etapes = window.THEMES.map((t, i) => {
       const debloque = Store.estDebloque(i);
       const choix = Store.choixDuMois(i);
       const estCourant = i === courant && !Store.voyageTermine();
-      let classe = debloque ? (estCourant ? "etape courante" : "etape ouverte") : "etape fermee";
-      return '<a class="' + classe + '" ' + (debloque ? 'href="#theme/' + i + '"' : "") +
-        ' style="--c1:' + t.couleur + ";--c2:" + t.couleur2 + '">' +
-        '<div class="etape-rond">' + (debloque ? t.emoji : "🔒") + "</div>" +
+      const classe = debloque ? (estCourant ? "etape courante" : "etape ouverte") : "etape verrouillee";
+      const rond = '<div class="etape-rond art">' +
+        (artSvg(t.slug) || '<span class="etape-emoji">' + t.emoji + "</span>") +
+        (debloque ? "" : '<span class="etape-cadenas" title="Encore verrouillé">🔒</span>') + "</div>";
+      const inner = rond +
         '<div class="etape-texte"><div class="etape-mois">Mois ' + (i + 1) + " · " + moisCalendaire(i) + "</div>" +
-        '<div class="etape-nom">' + (debloque ? t.nom : "Surprise…") + "</div>" +
-        '<div class="etape-periode">' + (debloque ? t.periode : "Patience !") + "</div></div>" +
+        '<div class="etape-nom">' + t.nom + "</div>" +
+        '<div class="etape-periode">' + t.periode + "</div>" +
+        (debloque ? "" : '<div class="etape-verrou">🔒 S’ouvre en ' + moisCalendaire(i) + "</div>") +
+        "</div>" +
         (choix ? '<div class="etape-sticker" title="Bon utilisé">' + cat(choix.cat).emoji + "</div>" :
-          (estCourant ? '<div class="etape-sticker vide">🎟️</div>' : "")) +
-        "</a>";
+          (estCourant ? '<div class="etape-sticker vide">🎟️</div>' : ""));
+      return debloque
+        ? '<a class="' + classe + '" href="#theme/' + i + '" style="--c1:' + t.couleur + ";--c2:" + t.couleur2 + '">' + inner + "</a>"
+        : '<div class="' + classe + '" style="--c1:' + t.couleur + ";--c2:" + t.couleur2 + '">' + inner + "</div>";
     }).join('<div class="etape-lien"></div>');
 
     app().innerHTML =
@@ -276,7 +293,7 @@
     app().innerHTML =
       '<header class="entete-theme" style="--c1:' + t.couleur + ";--c2:" + t.couleur2 + '">' +
       '<a class="btn-rond retour" href="#voyage">←</a>' +
-      '<div class="et-emoji">' + t.emoji + '</div>' +
+      medaillon(t, "et-medaille") +
       '<h1 class="et-nom">' + t.nom + '</h1>' +
       '<div class="et-periode">' + t.periode + '</div>' +
       '<p class="et-intro">' + t.intro + "</p></header>" +
@@ -418,8 +435,10 @@
       '<input id="c-ville" type="text" placeholder="ou tape ta ville…">' +
       '<button class="btn-mini" id="c-chercher">🔎</button></div>' +
       '<div class="barre-carte">' +
-      '<select id="c-theme">' + window.THEMES.map((t, i) =>
-        '<option value="' + i + '"' + (i === iCourant ? " selected" : "") + (Store.estDebloque(i) ? "" : " disabled") + ">" +
+      '<select id="c-theme">' +
+      '<option value="tous">🌍 Tous les thèmes</option>' +
+      window.THEMES.map((t, i) =>
+        '<option value="' + i + '"' + (i === iCourant ? " selected" : "") + ">" +
         t.emoji + " " + t.nom + "</option>").join("") + "</select>" +
       '<button class="btn-mini" id="c-librairies">📚 Librairies</button>' +
       '<button class="btn-mini" id="c-musees">🏛️ Musées OSM</button></div>' +
@@ -429,11 +448,14 @@
       "</main>" + navHtml("carte");
 
     let pos = s.position;
-    const themeSel = () => window.THEMES[parseInt($("#c-theme").value, 10)];
+    const themeSel = () => {
+      const v = $("#c-theme").value;
+      return v === "tous" ? null : window.THEMES[parseInt(v, 10)];
+    };
 
     async function rafraichir(extra) {
       const t = themeSel();
-      const lieux = Carte.lieuxDuTheme(t.slug, pos, null);
+      const lieux = t ? Carte.lieuxDuTheme(t.slug, pos, null) : Carte.tousLesLieux(pos);
       const points = lieux.concat(extra || []);
       try { await Carte.afficherCarte("la-carte", pos, points); }
       catch (e) { $("#la-carte").innerHTML = '<div class="carte-hors-ligne">🗺️ Carte indisponible (hors-ligne ?) — voici la liste :</div>'; }
@@ -529,7 +551,9 @@
         Store.carteVue(t.slug, j);
         ouvrirModale(
           '<div class="grande-carte" style="--c1:' + t.couleur + ";--c2:" + t.couleur2 + '">' +
-          '<div class="gc-haut"><span class="gc-emoji">' + f.e + '</span>' +
+          '<div class="gc-haut">' +
+          (artSvg(t.slug) ? '<div class="cf-fond" aria-hidden="true">' + artSvg(t.slug) + "</div>" : "") +
+          '<span class="gc-emoji">' + f.e + '</span>' +
           '<span class="gc-numero">' + t.emoji + " n°" + j + "</span></div>" +
           '<div class="gc-bas"><div class="gc-titre">' + esc(f.t) + '</div>' +
           '<div class="gc-texte">' + esc(f.s) + "</div></div></div>" +

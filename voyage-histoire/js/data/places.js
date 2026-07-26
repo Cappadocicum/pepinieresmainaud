@@ -1,15 +1,21 @@
-// Lieux à visiter en France, classés par thème : musées, sites, parcs.
-// Coordonnées approximatives (précision « ville ») — l'itinéraire exact
-// s'ouvre dans l'appli de cartes du téléphone.
+// Lieux à visiter en France (et tout près), classés par thème : musées,
+// sites, parcs. Plus de 120 lieux choisis pour les familles avec enfants
+// de 4 à 10 ans. Coordonnées approximatives (précision « ville ») —
+// l'itinéraire exact s'ouvre dans l'appli de cartes du téléphone.
 // type: "musee" (bon Musée) | "site" ou "parc" (bon Sortie)
 window.PLACES = [
-  // ——— Le commencement (dinosaures, origines) ———
+  // ——— Le commencement (Big Bang, Terre, dinosaures) ———
   { slug: "commencement", type: "musee", nom: "Muséum national d'Histoire naturelle", ville: "Paris (5e)", lat: 48.8430, lng: 2.3560, d: "La Grande Galerie de l'Évolution et la galerie des dinosaures : immanquable !" },
   { slug: "commencement", type: "musee", nom: "Musée des Confluences", ville: "Lyon", lat: 45.7327, lng: 4.8180, d: "Squelettes de dinosaures et origines du monde dans un bâtiment futuriste." },
   { slug: "commencement", type: "parc", nom: "Paléopolis, la colline aux dinosaures", ville: "Gannat (Allier)", lat: 46.0890, lng: 3.1920, d: "Parc dédié aux dinosaures et à la paléontologie, fouilles pour enfants." },
   { slug: "commencement", type: "musee", nom: "Paléospace l'Odyssée", ville: "Villers-sur-Mer (Calvados)", lat: 49.3210, lng: -0.0080, d: "Fossiles des falaises des Vaches Noires et animations pour enfants." },
   { slug: "commencement", type: "musee", nom: "Musée des Dinosaures Dinosauria", ville: "Espéraza (Aude)", lat: 42.9330, lng: 2.2210, d: "L'un des plus grands musées de dinosaures d'Europe, avec chantier de fouilles." },
   { slug: "commencement", type: "parc", nom: "Dino-Zoo", ville: "Charbonnières-les-Sapins (Doubs)", lat: 47.1830, lng: 6.2200, d: "Parcours en forêt parmi des dinosaures grandeur nature." },
+  { slug: "commencement", type: "parc", nom: "Vulcania", ville: "Saint-Ours-les-Roches (Puy-de-Dôme)", lat: 45.8210, lng: 2.9400, d: "Le parc des volcans d'Auvergne : simulateurs et machine à remonter le temps de la Terre." },
+  { slug: "commencement", type: "parc", nom: "Musée-Parc des Dinosaures", ville: "Mèze (Hérault)", lat: 43.4330, lng: 3.6110, d: "On y fouille de vrais œufs de dinosaures géants, sur un vrai gisement !" },
+  { slug: "commencement", type: "parc", nom: "Préhisto Dino Parc", ville: "Lacave (Lot)", lat: 44.8440, lng: 1.5480, d: "Du Big Bang aux premiers hommes en dizaines de scènes grandeur nature." },
+  { slug: "commencement", type: "musee", nom: "Muséum de Toulouse", ville: "Toulouse", lat: 43.5940, lng: 1.4480, d: "Squelettes géants et météorites : l'un des plus beaux muséums de France." },
+  { slug: "commencement", type: "musee", nom: "Planétarium de Vaulx-en-Velin", ville: "Vaulx-en-Velin (Rhône)", lat: 45.7810, lng: 4.9190, d: "Voyage aux origines de l'Univers, séances dès 5 ans, près de Lyon." },
 
   // ——— La Préhistoire ———
   { slug: "prehistoire", type: "site", nom: "Grottes du Cerdon", ville: "Cerdon (Ain)", lat: 46.0745, lng: 5.4664, d: "Parc de loisirs préhistoriques : visite de la grotte et ateliers (feu, chasse, poterie). À 30 min de Bourg-en-Bresse !" },
@@ -20,6 +26,12 @@ window.PLACES = [
   { slug: "prehistoire", type: "parc", nom: "Parc Samara", ville: "La Chaussée-Tirancourt (Somme)", lat: 49.9450, lng: 2.1600, d: "Démonstrations de taille de silex, feu et habitats reconstitués." },
   { slug: "prehistoire", type: "site", nom: "Alignements de Carnac", ville: "Carnac (Morbihan)", lat: 47.5920, lng: -3.0660, d: "Des milliers de menhirs alignés il y a 6 000 ans. Mystérieux !" },
   { slug: "prehistoire", type: "musee", nom: "Musée de l'Homme de Tautavel", ville: "Tautavel (Pyrénées-Orientales)", lat: 42.8150, lng: 2.7440, d: "À la rencontre de l'Homme de Tautavel, 450 000 ans !" },
+  { slug: "prehistoire", type: "site", nom: "Grotte du Pech Merle", ville: "Cabrerets (Lot)", lat: 44.5080, lng: 1.6440, d: "Des chevaux peints il y a 29 000 ans… qu'on visite en vrai (réserve tes places !)." },
+  { slug: "prehistoire", type: "site", nom: "Grotte de Niaux", ville: "Niaux (Ariège)", lat: 42.8200, lng: 1.5940, d: "Une vraie grotte ornée qu'on parcourt à la lampe torche. Magique !" },
+  { slug: "prehistoire", type: "parc", nom: "Paléosite", ville: "Saint-Césaire (Charente-Maritime)", lat: 45.7500, lng: -0.5020, d: "Le parc de l'homme de Néandertal : ateliers, morphing et tir au propulseur." },
+  { slug: "prehistoire", type: "musee", nom: "Musée de Préhistoire d'Île-de-France", ville: "Nemours (Seine-et-Marne)", lat: 48.2570, lng: 2.6960, d: "La Préhistoire tout près de Paris, dans un beau musée au bord de la forêt." },
+  { slug: "prehistoire", type: "site", nom: "Grotte de Rouffignac", ville: "Rouffignac (Dordogne)", lat: 45.0080, lng: 0.9840, d: "On entre en petit train électrique pour voir les mammouths gravés !" },
+  { slug: "prehistoire", type: "site", nom: "Filitosa", ville: "Sollacaro (Corse-du-Sud)", lat: 41.7480, lng: 8.8650, d: "Des statues-menhirs mystérieuses au milieu des oliviers corses." },
 
   // ——— L'Égypte Antique ———
   { slug: "egypte", type: "musee", nom: "Musée du Louvre — département égyptien", ville: "Paris (1er)", lat: 48.8606, lng: 2.3376, d: "Momies, sarcophages, sphinx : l'une des plus belles collections égyptiennes du monde." },
@@ -27,12 +39,19 @@ window.PLACES = [
   { slug: "egypte", type: "musee", nom: "Musée des Beaux-Arts — collection égyptienne", ville: "Lyon", lat: 45.7670, lng: 4.8340, d: "Sarcophages et objets des pharaons en plein centre de Lyon." },
   { slug: "egypte", type: "musee", nom: "Musée d'Archéologie méditerranéenne", ville: "Marseille", lat: 43.3000, lng: 5.3670, d: "Belle collection égyptienne à la Vieille Charité." },
   { slug: "egypte", type: "musee", nom: "Musée Georges-Labit", ville: "Toulouse", lat: 43.5930, lng: 1.4560, d: "Une momie et des antiquités égyptiennes dans une jolie villa mauresque." },
+  { slug: "egypte", type: "site", nom: "Obélisque de Louxor — place de la Concorde", ville: "Paris (8e)", lat: 48.8656, lng: 2.3212, d: "Un vrai monument égyptien de 3 300 ans, offert par l'Égypte, en plein Paris !" },
+  { slug: "egypte", type: "musee", nom: "Château-musée de Boulogne-sur-Mer", ville: "Boulogne-sur-Mer (Pas-de-Calais)", lat: 50.7260, lng: 1.6130, d: "Momie et sarcophages dans un vrai château : une des belles collections égyptiennes de France." },
+  { slug: "egypte", type: "musee", nom: "Musée de Grenoble — collection égyptienne", ville: "Grenoble (Isère)", lat: 45.1950, lng: 5.7320, d: "Momies et objets funéraires égyptiens au pied des Alpes." },
+  { slug: "egypte", type: "musee", nom: "Musée Dobrée", ville: "Nantes (Loire-Atlantique)", lat: 47.2110, lng: -1.5640, d: "Rouvert en 2024 : momies et trésors antiques dans un palais néogothique." },
+  { slug: "egypte", type: "musee", nom: "Louvre-Lens — la Galerie du temps", ville: "Lens (Pas-de-Calais)", lat: 50.4310, lng: 2.8030, d: "5 000 ans d'histoire dans une galerie géante, l'Égypte en tête. Entrée gratuite !" },
 
   // ——— La Grèce Antique ———
   { slug: "grece", type: "musee", nom: "Musée du Louvre — antiquités grecques", ville: "Paris (1er)", lat: 48.8606, lng: 2.3376, d: "La Vénus de Milo, la Victoire de Samothrace et les héros grecs." },
   { slug: "grece", type: "musee", nom: "Musée d'Histoire de Marseille", ville: "Marseille", lat: 43.2990, lng: 5.3750, d: "Marseille a été fondée par des Grecs il y a 2 600 ans : bateaux antiques et port ancien." },
   { slug: "grece", type: "musee", nom: "Musée d'Archéologie nationale", ville: "Saint-Germain-en-Laye (Yvelines)", lat: 48.8980, lng: 2.0930, d: "Un voyage de la préhistoire à l'Antiquité dans un château royal." },
   { slug: "grece", type: "musee", nom: "MuCEM et fort Saint-Jean", ville: "Marseille", lat: 43.2960, lng: 5.3610, d: "Les civilisations de la Méditerranée face à la mer." },
+  { slug: "grece", type: "site", nom: "Site archéologique d'Olbia", ville: "Hyères (Var)", lat: 43.0850, lng: 6.1530, d: "Une petite ville grecque fortifiée face à la mer Méditerranée." },
+  { slug: "grece", type: "musee", nom: "Musée Saint-Raymond", ville: "Toulouse", lat: 43.6010, lng: 1.4410, d: "Le musée des Antiques de Toulouse, avec parcours et jeux pour enfants." },
 
   // ——— La Rome Antique ———
   { slug: "rome", type: "site", nom: "Pont du Gard", ville: "Vers-Pont-du-Gard (Gard)", lat: 43.9470, lng: 4.5350, d: "L'aqueduc romain le plus spectaculaire du monde, avec espace enfants Ludo." },
@@ -41,6 +60,12 @@ window.PLACES = [
   { slug: "rome", type: "site", nom: "Théâtre antique d'Orange", ville: "Orange (Vaucluse)", lat: 44.1360, lng: 4.8080, d: "Le théâtre romain le mieux conservé d'Europe, avec son mur géant." },
   { slug: "rome", type: "site", nom: "Amphithéâtre et musée d'Arles", ville: "Arles (Bouches-du-Rhône)", lat: 43.6780, lng: 4.6310, d: "Arènes, cirque romain et un incroyable bateau antique repêché dans le Rhône." },
   { slug: "rome", type: "musee", nom: "Musée gallo-romain de Saint-Romain-en-Gal", ville: "Vienne (Isère)", lat: 45.5250, lng: 4.8710, d: "Mosaïques géantes et vie quotidienne gallo-romaine, au sud de Lyon." },
+  { slug: "rome", type: "musee", nom: "Musée de la Romanité", ville: "Nîmes (Gard)", lat: 43.8360, lng: 4.3600, d: "Face aux arènes : mosaïques, maquettes et parcours spectaculaire." },
+  { slug: "rome", type: "site", nom: "Vaison-la-Romaine", ville: "Vaison-la-Romaine (Vaucluse)", lat: 44.2410, lng: 5.0750, d: "Deux quartiers romains entiers à explorer en plein air, avec pont romain." },
+  { slug: "rome", type: "site", nom: "Site archéologique de Glanum", ville: "Saint-Rémy-de-Provence (Bouches-du-Rhône)", lat: 43.7740, lng: 4.8320, d: "Une ville romaine au pied des Alpilles, avec arc et mausolée à l'entrée." },
+  { slug: "rome", type: "musee", nom: "Vesunna, musée gallo-romain", ville: "Périgueux (Dordogne)", lat: 45.1810, lng: 0.7150, d: "Une immense maison romaine protégée sous un bâtiment de verre." },
+  { slug: "rome", type: "site", nom: "Trophée d'Auguste", ville: "La Turbie (Alpes-Maritimes)", lat: 43.7450, lng: 7.4010, d: "Un monument romain géant qui domine la mer, au-dessus de Monaco." },
+  { slug: "rome", type: "site", nom: "Arènes et musée de Cimiez", ville: "Nice (Alpes-Maritimes)", lat: 43.7200, lng: 7.2760, d: "Les vestiges romains de Nice, dans les jardins des oliviers de Cimiez." },
 
   // ——— Les Gaulois ———
   { slug: "gaulois", type: "site", nom: "MuséoParc Alésia", ville: "Alise-Sainte-Reine (Côte-d'Or)", lat: 47.5370, lng: 4.5000, d: "Sur les lieux de la célèbre bataille entre Vercingétorix et César. Animations familles." },
@@ -48,12 +73,18 @@ window.PLACES = [
   { slug: "gaulois", type: "musee", nom: "Musée de Gergovie", ville: "La Roche-Blanche (Puy-de-Dôme)", lat: 45.7190, lng: 3.1250, d: "Sur le plateau de la victoire de Vercingétorix, vue magnifique sur l'Auvergne." },
   { slug: "gaulois", type: "musee", nom: "Musée d'Archéologie nationale", ville: "Saint-Germain-en-Laye (Yvelines)", lat: 48.8980, lng: 2.0930, d: "La plus grande collection d'objets gaulois de France." },
   { slug: "gaulois", type: "parc", nom: "Parc Astérix", ville: "Plailly (Oise)", lat: 49.1360, lng: 2.5730, d: "Pour rire avec les Gaulois d'Astérix… et chercher ce qui est vrai ou inventé !" },
+  { slug: "gaulois", type: "parc", nom: "Le Village Gaulois", ville: "Pleumeur-Bodou (Côtes-d'Armor)", lat: 48.7830, lng: -3.5160, d: "Un village gaulois reconstitué et plein de jeux : radeaux, catapultes…" },
+  { slug: "gaulois", type: "site", nom: "Oppidum d'Ensérune", ville: "Nissan-lez-Ensérune (Hérault)", lat: 43.3100, lng: 3.0580, d: "Une ville gauloise perchée, avec vue incroyable sur l'étrange étang rayé de Montady." },
+  { slug: "gaulois", type: "musee", nom: "Musée d'Aquitaine", ville: "Bordeaux (Gironde)", lat: 44.8350, lng: -0.5730, d: "Trésors gaulois (dont le fameux trésor de Tayac) et grande histoire de la région." },
+  { slug: "gaulois", type: "musee", nom: "Laténium, parc et musée d'archéologie", ville: "Neuchâtel (Suisse)", lat: 47.0110, lng: 6.9800, d: "Au bord du lac, le grand musée des Celtes du pays de La Tène." },
 
   // ——— Les Vikings ———
   { slug: "vikings", type: "musee", nom: "Musée de la Tapisserie de Bayeux", ville: "Bayeux (Calvados)", lat: 49.2740, lng: -0.7000, d: "Une « BD » brodée de 70 mètres racontant Guillaume le Conquérant, descendant de Vikings. (Fermé pour travaux jusqu'en 2027 — vérifier avant d'y aller.)" },
   { slug: "vikings", type: "parc", nom: "Ornavik, parc historique", ville: "Hérouville-Saint-Clair (Calvados)", lat: 49.2110, lng: -0.3210, d: "Un village viking et normand reconstitué grandeur nature, avec artisans en costume." },
   { slug: "vikings", type: "site", nom: "Château Guillaume-le-Conquérant", ville: "Falaise (Calvados)", lat: 48.8920, lng: -0.2010, d: "Le château natal de Guillaume, avec tablettes de visite en réalité augmentée." },
   { slug: "vikings", type: "musee", nom: "Musée de Normandie", ville: "Caen (Calvados)", lat: 49.1860, lng: -0.3630, d: "L'histoire de la Normandie, terre offerte aux Vikings en 911 !" },
+  { slug: "vikings", type: "site", nom: "Abbaye de Jumièges", ville: "Jumièges (Seine-Maritime)", lat: 49.4310, lng: 0.8190, d: "Les ruines majestueuses d'une abbaye attaquée par les Vikings remontant la Seine." },
+  { slug: "vikings", type: "site", nom: "Château fort de Pirou", ville: "Pirou (Manche)", lat: 49.1760, lng: -1.5730, d: "Un vieux château normand de légende : on raconte que ses habitants se changèrent en oies !" },
 
   // ——— Le Moyen Âge ———
   { slug: "moyen-age", type: "site", nom: "Chantier médiéval de Guédelon", ville: "Treigny (Yonne)", lat: 47.5830, lng: 3.1550, d: "Ils construisent un vrai château fort avec les techniques du Moyen Âge ! Fascinant." },
@@ -63,6 +94,16 @@ window.PLACES = [
   { slug: "moyen-age", type: "site", nom: "Château de Castelnaud", ville: "Castelnaud-la-Chapelle (Dordogne)", lat: 44.8150, lng: 1.1460, d: "Le château des machines de guerre médiévales, avec démonstrations de trébuchet." },
   { slug: "moyen-age", type: "site", nom: "Cité médiévale de Provins", ville: "Provins (Seine-et-Marne)", lat: 48.5600, lng: 3.2870, d: "Remparts, souterrains et spectacles de chevalerie et d'aigles." },
   { slug: "moyen-age", type: "site", nom: "Château des Allymes", ville: "Ambérieu-en-Bugey (Ain)", lat: 45.9770, lng: 5.3830, d: "Un vrai château fort dans l'Ain, avec vue sur la plaine de la Bresse." },
+  { slug: "moyen-age", type: "musee", nom: "Musée de Cluny — musée national du Moyen Âge", ville: "Paris (5e)", lat: 48.8500, lng: 2.3440, d: "La Dame à la licorne et les trésors des chevaliers, dans un hôtel médiéval." },
+  { slug: "moyen-age", type: "site", nom: "Palais des Papes", ville: "Avignon (Vaucluse)", lat: 43.9510, lng: 4.8070, d: "Le plus grand palais gothique du monde, avec HistoPad en réalité augmentée." },
+  { slug: "moyen-age", type: "site", nom: "Château de Vincennes", ville: "Vincennes (Val-de-Marne)", lat: 48.8420, lng: 2.4360, d: "Le plus haut donjon médiéval d'Europe, aux portes de Paris." },
+  { slug: "moyen-age", type: "site", nom: "Château du Haut-Kœnigsbourg", ville: "Orschwiller (Bas-Rhin)", lat: 48.2490, lng: 7.3440, d: "Un château de montagne restauré : on se croirait au temps des chevaliers." },
+  { slug: "moyen-age", type: "site", nom: "Château fort de Sedan", ville: "Sedan (Ardennes)", lat: 49.7020, lng: 4.9430, d: "Le plus grand château fort d'Europe : 35 000 m² à explorer !" },
+  { slug: "moyen-age", type: "site", nom: "Forteresse royale de Chinon", ville: "Chinon (Indre-et-Loire)", lat: 47.1670, lng: 0.2370, d: "Là où Jeanne d'Arc rencontra le futur roi Charles VII." },
+  { slug: "moyen-age", type: "site", nom: "Château de Murol", ville: "Murol (Puy-de-Dôme)", lat: 45.5730, lng: 2.9350, d: "Animations médiévales en costume tout l'été, en Auvergne." },
+  { slug: "moyen-age", type: "site", nom: "Remparts d'Aigues-Mortes", ville: "Aigues-Mortes (Gard)", lat: 43.5660, lng: 4.1910, d: "La ville du roi Saint Louis, avec 1 640 mètres de remparts complets." },
+  { slug: "moyen-age", type: "site", nom: "Tour Jean-sans-Peur", ville: "Paris (2e)", lat: 48.8640, lng: 2.3490, d: "La petite tour médiévale cachée de Paris, avec des visites contées rigolotes." },
+  { slug: "moyen-age", type: "site", nom: "Hospices de Beaune", ville: "Beaune (Côte-d'Or)", lat: 47.0240, lng: 4.8380, d: "L'hôtel-Dieu de 1443 aux célèbres toits multicolores de Bourgogne." },
 
   // ——— La Renaissance ———
   { slug: "renaissance", type: "site", nom: "Château de Chambord", ville: "Chambord (Loir-et-Cher)", lat: 47.6160, lng: 1.5170, d: "Le château géant de François Ier et son escalier à double révolution imaginé avec Léonard." },
@@ -70,18 +111,34 @@ window.PLACES = [
   { slug: "renaissance", type: "site", nom: "Château de Chenonceau", ville: "Chenonceaux (Indre-et-Loire)", lat: 47.3250, lng: 1.0700, d: "Le château construit sur un pont, au-dessus de la rivière !" },
   { slug: "renaissance", type: "site", nom: "Monastère royal de Brou", ville: "Bourg-en-Bresse (Ain)", lat: 46.1980, lng: 5.2360, d: "Un chef-d'œuvre à Bourg-en-Bresse même : église flamboyante et jeux de piste pour enfants." },
   { slug: "renaissance", type: "site", nom: "Château royal de Blois", ville: "Blois (Loir-et-Cher)", lat: 47.5850, lng: 1.3310, d: "Quatre châteaux en un, et un spectacle son et lumière le soir." },
+  { slug: "renaissance", type: "site", nom: "Château d'Azay-le-Rideau", ville: "Azay-le-Rideau (Indre-et-Loire)", lat: 47.2590, lng: 0.4660, d: "Un bijou de la Renaissance posé sur l'eau, effet miroir garanti." },
+  { slug: "renaissance", type: "site", nom: "Château royal d'Amboise", ville: "Amboise (Indre-et-Loire)", lat: 47.4130, lng: 0.9860, d: "Le château des rois de la Renaissance, où repose Léonard de Vinci." },
+  { slug: "renaissance", type: "musee", nom: "Musée national de la Renaissance", ville: "Écouen (Val-d'Oise)", lat: 49.0210, lng: 2.3770, d: "Un vrai château Renaissance rempli de trésors, à 20 km de Paris." },
+  { slug: "renaissance", type: "site", nom: "Château de Fontainebleau", ville: "Fontainebleau (Seine-et-Marne)", lat: 48.4020, lng: 2.7000, d: "Le palais préféré de François Ier, avec un parc immense pour courir." },
+  { slug: "renaissance", type: "site", nom: "Château et jardins de Villandry", ville: "Villandry (Indre-et-Loire)", lat: 47.3400, lng: 0.5140, d: "Des jardins en damier extraordinaires, labyrinthe compris !" },
 
   // ——— Les Temps Modernes ———
   { slug: "temps-modernes", type: "site", nom: "Château de Versailles", ville: "Versailles (Yvelines)", lat: 48.8040, lng: 2.1200, d: "La galerie des Glaces, les jardins et les fontaines du Roi Soleil." },
   { slug: "temps-modernes", type: "site", nom: "Château de Vaux-le-Vicomte", ville: "Maincy (Seine-et-Marne)", lat: 48.5660, lng: 2.7140, d: "Le château qui a inspiré Versailles, avec visites aux chandelles." },
   { slug: "temps-modernes", type: "site", nom: "Corderie royale et l'Hermione", ville: "Rochefort (Charente-Maritime)", lat: 45.9400, lng: -0.9560, d: "Les grands navires du roi et la célèbre frégate de La Fayette." },
   { slug: "temps-modernes", type: "musee", nom: "Musée national de la Marine", ville: "Paris (16e)", lat: 48.8620, lng: 2.2880, d: "Maquettes géantes de vaisseaux royaux et histoires de marins." },
+  { slug: "temps-modernes", type: "site", nom: "Château de Breteuil", ville: "Choisel (Yvelines)", lat: 48.7290, lng: 2.0330, d: "Le château des contes de Perrault : le Chat botté et la Belle au bois dormant t'attendent !" },
+  { slug: "temps-modernes", type: "site", nom: "Château de Cheverny", ville: "Cheverny (Loir-et-Cher)", lat: 47.5000, lng: 1.4580, d: "Le château qui a inspiré Moulinsart dans Tintin, avec exposition ludique." },
+  { slug: "temps-modernes", type: "site", nom: "Place Stanislas", ville: "Nancy (Meurthe-et-Moselle)", lat: 48.6930, lng: 6.1830, d: "La plus belle place royale de France, avec ses grilles dorées." },
+  { slug: "temps-modernes", type: "site", nom: "Citadelle de Besançon", ville: "Besançon (Doubs)", lat: 47.2330, lng: 6.0310, d: "La forteresse de Vauban… avec un muséum et un zoo à l'intérieur !" },
+  { slug: "temps-modernes", type: "site", nom: "Saline royale d'Arc-et-Senans", ville: "Arc-et-Senans (Doubs)", lat: 47.0320, lng: 5.7770, d: "Une usine royale en demi-cercle, classée à l'UNESCO." },
+  { slug: "temps-modernes", type: "site", nom: "Remparts de Saint-Malo", ville: "Saint-Malo (Ille-et-Vilaine)", lat: 48.6490, lng: -2.0260, d: "La cité corsaire : remparts, marées géantes et histoires de pirates." },
 
   // ——— La Révolution ———
   { slug: "revolution", type: "musee", nom: "Musée de la Révolution française", ville: "Vizille (Isère)", lat: 45.0780, lng: 5.7720, d: "Le seul musée au monde dédié à la Révolution, dans un château avec grand parc à roussettes… non, à cygnes !" },
   { slug: "revolution", type: "site", nom: "Conciergerie", ville: "Paris (1er)", lat: 48.8560, lng: 2.3450, d: "Le palais devenu prison de la Révolution, avec tablette « HistoPad » pour remonter le temps." },
   { slug: "revolution", type: "musee", nom: "Musée Carnavalet", ville: "Paris (3e)", lat: 48.8570, lng: 2.3630, d: "L'histoire de Paris, avec de fabuleuses salles sur la Révolution. Gratuit !" },
   { slug: "revolution", type: "site", nom: "Hôtel des Invalides — tombeau de Napoléon", ville: "Paris (7e)", lat: 48.8550, lng: 2.3130, d: "Le gigantesque tombeau de l'Empereur et le musée de l'Armée." },
+  { slug: "revolution", type: "site", nom: "Panthéon", ville: "Paris (5e)", lat: 48.8460, lng: 2.3460, d: "Le temple des héros de la France : Voltaire, Marie Curie…" },
+  { slug: "revolution", type: "site", nom: "Arc de Triomphe", ville: "Paris (8e)", lat: 48.8740, lng: 2.2950, d: "Commandé par Napoléon, avec la plus belle vue sur Paris tout en haut." },
+  { slug: "revolution", type: "musee", nom: "Château de Malmaison", ville: "Rueil-Malmaison (Hauts-de-Seine)", lat: 48.8710, lng: 2.1740, d: "La maison de Joséphine et Napoléon, avec ses fameux cygnes noirs." },
+  { slug: "revolution", type: "site", nom: "Colonne de Juillet — place de la Bastille", ville: "Paris (11e)", lat: 48.8530, lng: 2.3690, d: "À l'emplacement exact de la prison prise le 14 juillet 1789." },
+  { slug: "revolution", type: "site", nom: "Château de Valençay", ville: "Valençay (Indre)", lat: 47.1610, lng: 1.5640, d: "Le château de Talleyrand, avec grand jeu de piste et labyrinthe." },
 
   // ——— Notre époque ———
   { slug: "notre-epoque", type: "musee", nom: "Cité des Sciences et de l'Industrie", ville: "Paris (19e)", lat: 48.8950, lng: 2.3880, d: "La Cité des Enfants : sciences et inventions à toucher dès 2 ans." },
@@ -90,4 +147,10 @@ window.PLACES = [
   { slug: "notre-epoque", type: "musee", nom: "Institut Lumière", ville: "Lyon (8e)", lat: 45.7450, lng: 4.8710, d: "Là où le cinéma est né en 1895, dans la maison des frères Lumière." },
   { slug: "notre-epoque", type: "site", nom: "Tour Eiffel", ville: "Paris (7e)", lat: 48.8584, lng: 2.2945, d: "330 mètres de fer construits en 2 ans en 1889. Toujours magique." },
   { slug: "notre-epoque", type: "musee", nom: "Musée des Arts et Métiers", ville: "Paris (3e)", lat: 48.8660, lng: 2.3550, d: "Avions de Blériot, premières voitures et machines extraordinaires." },
+  { slug: "notre-epoque", type: "parc", nom: "Cité de l'espace", ville: "Toulouse", lat: 43.5860, lng: 1.4930, d: "Fusée Ariane grandeur nature, station Mir et entraînement d'astronaute !" },
+  { slug: "notre-epoque", type: "musee", nom: "Musée Aeroscopia", ville: "Blagnac (Haute-Garonne)", lat: 43.6650, lng: 1.3620, d: "Concorde, A380 : les avions géants de Toulouse vus de tout près." },
+  { slug: "notre-epoque", type: "musee", nom: "Cité de l'Automobile", ville: "Mulhouse (Haut-Rhin)", lat: 47.7610, lng: 7.3280, d: "La plus grande collection de voitures anciennes du monde." },
+  { slug: "notre-epoque", type: "musee", nom: "Musée d'Orsay", ville: "Paris (7e)", lat: 48.8600, lng: 2.3270, d: "Dans une ancienne gare : horloge géante et tableaux très célèbres." },
+  { slug: "notre-epoque", type: "musee", nom: "Musée Miniature et Cinéma", ville: "Lyon (5e)", lat: 45.7630, lng: 4.8270, d: "Décors de cinéma et mondes miniatures incroyables." },
+  { slug: "notre-epoque", type: "musee", nom: "Familistère de Guise", ville: "Guise (Aisne)", lat: 49.9020, lng: 3.6270, d: "Un « palais » construit en 1859 pour les ouvriers et leurs familles." },
 ];

@@ -50,7 +50,7 @@
     const filtre = kind === "librairie"
       ? '(node["shop"="books"](around:' + r + "," + pos.lat + "," + pos.lng + ');way["shop"="books"](around:' + r + "," + pos.lat + "," + pos.lng + "););"
       : '(node["tourism"="museum"](around:' + r + "," + pos.lat + "," + pos.lng + ');way["tourism"="museum"](around:' + r + "," + pos.lat + "," + pos.lng + "););";
-    const query = "[out:json][timeout:15];" + filtre + "out center tags 40;";
+    const query = "[out:json][timeout:15];" + filtre + "out center tags 60;";
     const resp = await fetch("https://overpass-api.de/api/interpreter", {
       method: "POST",
       body: "data=" + encodeURIComponent(query),
@@ -79,6 +79,13 @@
   }
 
   // ——— Lieux conseillés (base locale) ———
+  // Tous les lieux, tous thèmes confondus (triés par distance si position)
+  function tousLesLieux(pos) {
+    let list = window.PLACES.map(p => Object.assign({}, p, { dist: pos ? distanceKm(pos, p) : null }));
+    if (pos) list.sort((a, b) => a.dist - b.dist);
+    return pos ? list.slice(0, 80) : list;
+  }
+
   function lieuxDuTheme(slug, pos, types) {
     let list = window.PLACES.filter(p => p.slug === slug);
     if (types && types.length) list = list.filter(p => types.includes(p.type));
@@ -152,5 +159,5 @@
     if (carte && pos) carte.setView([pos.lat, pos.lng], zoom || 9);
   }
 
-  window.Carte = { distanceKm, formatKm, localiser, chercherVille, chercherAutour, lieuxDuTheme, afficherCarte, poserMarqueurs, recentrer };
+  window.Carte = { distanceKm, formatKm, localiser, chercherVille, chercherAutour, lieuxDuTheme, tousLesLieux, afficherCarte, poserMarqueurs, recentrer };
 })();
