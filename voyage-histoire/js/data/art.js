@@ -255,4 +255,15 @@
     window.ART[slug] = '<img class="art-img" src="assets/art/' + slug +
       '.webp" alt="" decoding="async">';
   });
+
+  // Fonds de carte à collectionner (portrait, générés par IA) : utilisés par
+  // la carte du jour, la grande carte de l'album et les mini-cartes.
+  window.CARD_ART = {};
+  [
+    "commencement", "prehistoire", "egypte", "grece", "rome", "gaulois",
+    "vikings", "moyen-age", "renaissance", "temps-modernes", "revolution",
+    "notre-epoque",
+  ].forEach(function (slug) {
+    window.CARD_ART[slug] = "assets/cards/" + slug + ".webp";
+  });
 })();

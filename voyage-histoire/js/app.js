@@ -27,6 +27,13 @@
   // médaillons, dessin vectoriel pleine largeur pour les fonds de carte.
   function artSvg(slug) { return (window.ART || {})[slug] || ""; }
   function fondSvg(slug) { return (window.ART_SVG || {})[slug] || artSvg(slug); }
+  // Fenêtre d'illustration des cartes à collectionner : fond IA en priorité
+  function fondCarte(slug) {
+    const url = (window.CARD_ART || {})[slug];
+    if (url) return '<div class="cf-fond plein" aria-hidden="true"><img src="' + url + '" alt="" decoding="async"></div>';
+    const svg = fondSvg(slug);
+    return svg ? '<div class="cf-fond" aria-hidden="true">' + svg + "</div>" : "";
+  }
   function medaillon(t, classe) {
     const svg = artSvg(t.slug);
     return '<div class="' + classe + '"' +
@@ -179,8 +186,7 @@
       bandeau +
       '<h2 class="titre-section">🃏 La carte du jour</h2>' +
       '<div class="carte-fait' + (dejaVue ? "" : " neuve") + '" id="carte-jour" style="--c1:' + t.couleur + ";--c2:" + t.couleur2 + '">' +
-      '<div class="cf-haut">' +
-      (fondSvg(t.slug) ? '<div class="cf-fond" aria-hidden="true">' + fondSvg(t.slug) + "</div>" : "") +
+      '<div class="cf-haut">' + fondCarte(t.slug) +
       '<span class="cf-emoji">' + fait.e + '</span>' +
       '<span class="cf-jour">' + jour + " " + moisCalendaire(i).split(" ")[0] + "</span></div>" +
       '<div class="cf-bas"><div class="cf-titre">' + esc(fait.t) + '</div>' +
@@ -518,6 +524,9 @@
     const jourMax = (i < courant || Store.get().modeDecouverte) ? 31 : aujourdHui;
     document.body.className = "fond-app";
 
+    const artCarte = (window.CARD_ART || {})[t.slug];
+    const mcArt = artCarte
+      ? '<img class="mc-art" src="' + artCarte + '" alt="" loading="lazy" decoding="async">' : "";
     const cartes = [];
     for (let j = 1; j <= 31; j++) {
       const f = faitDuJour(t.slug, j);
@@ -525,7 +534,8 @@
       const vue = Store.estVue(t.slug, j);
       cartes.push(
         ouverte
-          ? '<button class="mini-carte' + (vue ? " vue" : "") + '" data-jour="' + j + '" style="--c1:' + t.couleur + ";--c2:" + t.couleur2 + '">' +
+          ? '<button class="mini-carte' + (vue ? " vue" : "") + (mcArt ? " avec-art" : "") + '" data-jour="' + j + '" style="--c1:' + t.couleur + ";--c2:" + t.couleur2 + '">' +
+            mcArt +
             '<span class="mc-emoji">' + f.e + '</span><span class="mc-jour">' + j + "</span>" +
             (vue ? "" : '<span class="mc-point"></span>') + "</button>"
           : '<div class="mini-carte fermee"><span class="mc-emoji">❓</span><span class="mc-jour">' + j + "</span></div>"
@@ -553,8 +563,7 @@
         Store.carteVue(t.slug, j);
         ouvrirModale(
           '<div class="grande-carte" style="--c1:' + t.couleur + ";--c2:" + t.couleur2 + '">' +
-          '<div class="gc-haut">' +
-          (fondSvg(t.slug) ? '<div class="cf-fond" aria-hidden="true">' + fondSvg(t.slug) + "</div>" : "") +
+          '<div class="gc-haut">' + fondCarte(t.slug) +
           '<span class="gc-emoji">' + f.e + '</span>' +
           '<span class="gc-numero">' + t.emoji + " n°" + j + "</span></div>" +
           '<div class="gc-bas"><div class="gc-titre">' + esc(f.t) + '</div>' +
