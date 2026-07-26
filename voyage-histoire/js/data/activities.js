@@ -1,0 +1,88 @@
+// Idées d'activités et de jeux par thème : kits à acheter, activités à faire
+// à la maison ou dans le jardin, recettes, jeux… types : kit | maison | jardin | cuisine | jeu
+window.ACTIVITIES = {
+  "commencement": [
+    { type: "kit", t: "Kit de fouille de dinosaure", d: "Un bloc à creuser avec de vrais outils de paléontologue pour dégager un squelette de dino (en magasin de jouets ou en ligne)." },
+    { type: "jardin", t: "Chasse aux fossiles maison", d: "Cache des coquillages et « os » en plâtre dans un bac à sable, puis fouille-les avec un pinceau, comme un vrai paléontologue !" },
+    { type: "maison", t: "Fabriquer un volcan qui entre en éruption", d: "Bicarbonate + vinaigre + colorant rouge dans un volcan en pâte à modeler : éruption garantie (avec un parent) !" },
+    { type: "maison", t: "Fossiles en pâte à sel", d: "Presse des feuilles, coquillages ou jouets dinosaures dans de la pâte à sel, fais cuire : de vrais fossiles à collectionner !" },
+    { type: "jeu", t: "Figurines et puzzle de dinosaures", d: "Un tube de figurines réalistes ou un puzzle « ère des dinosaures » pour rejouer la vie d'il y a 70 millions d'années." },
+  ],
+  "prehistoire": [
+    { type: "kit", t: "Kit peinture rupestre", d: "Peindre comme à Lascaux avec des ocres (ou fabriquer sa peinture avec des épices : paprika, curcuma, cacao)." },
+    { type: "jardin", t: "Fouille archéologique dans le jardin", d: "Enterre des « trésors préhistoriques » (silex, colliers de pâtes, os de poulet nettoyés), quadrille la zone avec de la ficelle et fouille !" },
+    { type: "maison", t: "Grotte sous la table", d: "Un drap sur la table, une lampe de poche, et on peint (sur papier !) des mammouths accrochés sous « la paroi de la grotte »." },
+    { type: "maison", t: "Collier préhistorique", d: "Enfile des coquillages, des perles en terre cuite maison et des plumes pour un vrai collier de Cro-Magnon." },
+    { type: "cuisine", t: "Goûter préhistorique", d: "Fruits, noix, noisettes et galettes de céréales cuites à la poêle : le goûter des chasseurs-cueilleurs !" },
+  ],
+  "egypte": [
+    { type: "kit", t: "Kit de fouille momie ou scarabée", d: "Dégage un sarcophage ou des amulettes cachées dans un bloc à creuser." },
+    { type: "maison", t: "Écrire son prénom en hiéroglyphes", d: "Avec un alphabet hiéroglyphique imprimé, écris ton prénom sur un « papyrus » (papier trempé dans le thé puis séché)." },
+    { type: "maison", t: "Momifier une poupée", d: "Bandelettes de papier toilette ou de tissu, un masque doré en papier : fabrique ta momie et son sarcophage en boîte à chaussures." },
+    { type: "jeu", t: "Construire une pyramide", d: "En Kapla, en Lego ou en sucres : qui construira la pyramide la plus haute et la plus solide ?" },
+    { type: "cuisine", t: "Pains pitas et dattes", d: "Un goûter d'Égypte antique : pain plat, miel, dattes et raisins secs, comme au temps des pharaons." },
+  ],
+  "grece": [
+    { type: "jeu", t: "Mini Jeux olympiques", d: "Course, saut en longueur, lancer (de balles !) : organise tes propres Jeux olympiques au parc avec médailles en carton doré." },
+    { type: "maison", t: "Couronne de laurier et toge", d: "Fabrique une couronne de champion en feuilles de laurier (ou papier) et drape-toi dans un drap blanc comme un Grec ancien." },
+    { type: "kit", t: "Figurines de la mythologie", d: "Figurines ou cartes des dieux grecs pour apprendre qui est Zeus, Athéna, Poséidon…" },
+    { type: "maison", t: "Fabriquer un cheval de Troie", d: "Avec une boîte en carton, des rouleaux et de la peinture : cache des petits soldats à l'intérieur !" },
+    { type: "maison", t: "Théâtre d'ombres mythologique", d: "Découpe des silhouettes d'Ulysse, du cyclope ou du Minotaure et raconte l'histoire derrière un drap éclairé." },
+  ],
+  "rome": [
+    { type: "maison", t: "Bouclier et casque de légionnaire", d: "Carton, peinture rouge et dorée : fabrique ton équipement de légionnaire romain (pour parader, pas pour se battre !)." },
+    { type: "jeu", t: "Apprendre les chiffres romains", d: "Écris ton âge et l'année en chiffres romains, puis joue à les retrouver sur les monuments et les horloges !" },
+    { type: "maison", t: "Mosaïque romaine", d: "Avec des petits carrés de papier coloré ou de la mosaïque autocollante, compose un tableau comme dans les villas romaines." },
+    { type: "cuisine", t: "Pain romain et globuli", d: "Fais un pain rond marqué en 8 parts comme à Pompéi, ou des globuli (petites boules au miel), le dessert des Romains." },
+    { type: "kit", t: "Maquette de monument romain", d: "Un puzzle 3D ou une maquette du Colisée ou d'un temple romain à construire." },
+  ],
+  "gaulois": [
+    { type: "maison", t: "Cabane gauloise miniature", d: "Construis une maison gauloise avec des branchettes, de la ficelle et de la paille : murs ronds et grand toit pointu !" },
+    { type: "jardin", t: "Potion magique du druide", d: "Cueille (avec un parent) menthe, thym, romarin… et prépare une « potion magique » : une tisane au miel !" },
+    { type: "jeu", t: "Jeux d'Astérix", d: "Un jeu de société ou un puzzle Astérix, puis cherche ensemble ce qui est vrai et ce qui est inventé chez les Gaulois." },
+    { type: "maison", t: "Bijoux et torque gaulois", d: "Fabrique un torque (le collier des chefs gaulois) avec du fil doré torsadé ou de la pâte autodurcissante." },
+    { type: "cuisine", t: "Festin gaulois", d: "Galettes de céréales, fromage, miel et jus de pomme : un vrai banquet gaulois (le sanglier est facultatif !)." },
+  ],
+  "vikings": [
+    { type: "maison", t: "Drakkar en carton", d: "Une boîte à œufs ou du carton, une voile rayée, des boucliers ronds sur les côtés : ton drakkar est prêt à naviguer (dans la baignoire ?)." },
+    { type: "maison", t: "Écrire en runes", d: "Avec l'alphabet runique, grave ton prénom sur des galets ou de la pâte à sel, comme sur les pierres vikings." },
+    { type: "jeu", t: "Jeu de stratégie nordique", d: "Découvre le hnefatafl, le « jeu d'échecs des Vikings », ou un memory des dieux nordiques." },
+    { type: "jardin", t: "Chasse au trésor viking", d: "Une carte au trésor vieillie au thé, des énigmes en runes, et un coffre de pièces en chocolat à déterrer !" },
+    { type: "cuisine", t: "Pain viking et compote de pommes", d: "Un pain rond cuit à la poêle et une compote maison : le repas des grands navigateurs." },
+  ],
+  "moyen-age": [
+    { type: "kit", t: "Château fort à construire", d: "Maquette, Kapla ou grands cartons : construis ton château avec créneaux, tours et pont-levis qui se lève vraiment (ficelle + rouleau)." },
+    { type: "maison", t: "Blason de ta famille", d: "Invente ton blason de chevalier : choisis tes couleurs, ton animal et ta devise, puis peins-le sur un écu en carton." },
+    { type: "maison", t: "Vitrail en papier", d: "Papier vitrail ou papier de soie coloré + carton noir : fabrique un vitrail de cathédrale à coller sur la fenêtre." },
+    { type: "jeu", t: "Tournoi de chevaliers", d: "Parcours d'obstacles, jeux d'anneaux à attraper, quilles : organise un tournoi (en bois et en mousse !) dans le jardin." },
+    { type: "maison", t: "Enluminure de son prénom", d: "Dessine la première lettre de ton prénom en grand, décore-la d'or et de motifs comme les moines copistes." },
+  ],
+  "renaissance": [
+    { type: "kit", t: "Maquette d'une machine de Léonard", d: "Pont, catapulte ou machine volante : des maquettes en bois des inventions de Léonard de Vinci existent pour les enfants." },
+    { type: "maison", t: "Peindre comme Léonard", d: "Reproduis la Joconde à ta façon (moustaches autorisées !) et découvre pourquoi son sourire est célèbre." },
+    { type: "maison", t: "Écriture en miroir", d: "Léonard écrivait à l'envers ! Essaie d'écrire un message secret lisible seulement dans un miroir." },
+    { type: "jeu", t: "Carte des grandes découvertes", d: "Sur un planisphère, trace les voyages de Colomb et Magellan avec des ficelles et des petits bateaux en papier." },
+    { type: "cuisine", t: "Chocolat chaud des explorateurs", d: "Le chocolat est arrivé d'Amérique à la Renaissance : prépare un vrai chocolat chaud et raconte son voyage !" },
+  ],
+  "temps-modernes": [
+    { type: "maison", t: "Masque et perruque de bal royal", d: "Fabrique un masque doré et organise un petit bal comme à Versailles, musique baroque en fond !" },
+    { type: "jardin", t: "Jardin à la française miniature", d: "Dans un bac, dessine des allées bien droites et des massifs symétriques, comme le jardinier du roi Le Nôtre." },
+    { type: "kit", t: "Kit de pirate ou de mousquetaire", d: "Longue-vue en rouleaux de carton, carte au trésor, chapeau à plume : à l'abordage (gentiment) !" },
+    { type: "maison", t: "Cadran solaire du Roi Soleil", d: "Une assiette en carton, une paille et du soleil : fabrique un cadran qui donne l'heure comme au XVIIe siècle." },
+    { type: "maison", t: "Mini montgolfière décorative", d: "Un ballon, du papier mâché coloré et une petite nacelle : fabrique la montgolfière des frères Montgolfier." },
+  ],
+  "revolution": [
+    { type: "maison", t: "Cocarde et drapeau tricolores", d: "Papier crépon bleu, blanc, rouge : fabrique ta cocarde comme en 1789 et un petit drapeau pour le 14 Juillet." },
+    { type: "jeu", t: "Apprendre la Marseillaise", d: "Écoute la Marseillaise, apprends le refrain et découvre ce que racontent ses paroles (version enfants)." },
+    { type: "maison", t: "Ton cahier de doléances", d: "Comme les Français de 1789, écris ou dessine tes idées pour améliorer la maison ou l'école, et présente-les à la famille !" },
+    { type: "jeu", t: "Mesurer comme en 1795", d: "Le mètre est né à la Révolution ! Mesure toute la maison au mètre, puis avec tes pieds et tes mains, et compare." },
+    { type: "kit", t: "Puzzle ou jeu sur l'histoire de France", d: "Un puzzle « frise de l'histoire de France » ou un jeu de cartes des rois et de la Révolution." },
+  ],
+  "notre-epoque": [
+    { type: "kit", t: "Fusée ou système solaire à construire", d: "Maquette de fusée, système solaire phosphorescent ou fusée à eau (avec un parent) : direction les étoiles !" },
+    { type: "maison", t: "Fabriquer un thaumatrope ou folioscope", d: "Fabrique un petit folioscope (flipbook) : dessine 20 images et fais-les défiler, c'est le cinéma des frères Lumière !" },
+    { type: "maison", t: "Téléphone à ficelle", d: "Deux pots de yaourt et une ficelle bien tendue : découvre comment le son voyage, comme les premiers téléphones." },
+    { type: "jeu", t: "Interview des grands-parents", d: "Enregistre une interview de tes grands-parents : école, jouets, musique… c'est déjà de l'histoire vivante !" },
+    { type: "maison", t: "La frise de MA vie", d: "Dessine ta propre frise chronologique : naissance, premiers pas, entrée à l'école… Toi aussi tu fais partie de l'Histoire !" },
+  ],
+};

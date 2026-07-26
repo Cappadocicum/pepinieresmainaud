@@ -1,0 +1,15 @@
+{
+  "name": "Mon Voyage dans l'Histoire",
+  "short_name": "Voyage Histoire",
+  "description": "Chaque mois une période de l'Histoire, chaque jour une découverte : un voyage de 12 mois pour les enfants.",
+  "lang": "fr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#7c3aed",
+  "theme_color": "#7c3aed",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

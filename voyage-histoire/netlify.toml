@@ -1,0 +1,16 @@
+# Déploiement Netlify de l'application « Mon Voyage dans l'Histoire ».
+# Dans Netlify : Add new site → Import from GitHub → choisir ce dépôt,
+# puis renseigner "Base directory" = voyage-histoire (aucune commande de
+# build, dossier de publication = .).
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
