@@ -2,3 +2,4 @@
 // unique (assets/cards/<slug>/<jour>.webp). Rempli au fur et à mesure des
 // livraisons ; les thèmes absents utilisent le fond commun du thème.
 window.CARD_ART_DAYS = {};
+window.CARD_ART_DAYS["commencement"] = true;
