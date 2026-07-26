@@ -384,15 +384,16 @@ input.erreur { border-color: #ef4444; animation: secoue .3s; }
   border: 6px solid rgba(255,255,255,.92);
   box-shadow: 0 10px 20px rgba(0,0,0,.3);
 }
-.ct-medaille svg, .et-medaille svg, .etape-rond.art svg {
-  width: 100%; height: 100%; display: block;
+.ct-medaille svg, .et-medaille svg, .etape-rond.art svg,
+.ct-medaille img, .et-medaille img, .etape-rond.art img {
+  width: 100%; height: 100%; display: block; object-fit: cover;
 }
 .ct-medaille[data-emoji], .et-medaille[data-emoji] { font-size: 3rem; }
 
 /* Fond illustré derrière la carte du jour et la grande carte de l'album */
 .cf-haut, .gc-haut { position: relative; overflow: hidden; }
 .cf-fond { position: absolute; inset: 0; opacity: .38; }
-.cf-fond svg { width: 100%; height: 100%; display: block; }
+.cf-fond svg, .cf-fond img { width: 100%; height: 100%; display: block; object-fit: cover; }
 .cf-emoji, .cf-jour, .gc-emoji, .gc-numero { position: relative; z-index: 1; }
 
 /* ——— Frise : tous les mois visibles, les futurs verrouillés ——— */
@@ -400,7 +401,7 @@ input.erreur { border-color: #ef4444; animation: secoue .3s; }
   position: relative; overflow: visible; background: #fff; padding: 0;
   box-shadow: 0 4px 8px rgba(51,39,42,.2), inset 0 0 0 3px #fff;
 }
-.etape-rond.art svg { border-radius: 50%; }
+.etape-rond.art svg, .etape-rond.art img { border-radius: 50%; }
 .etape-rond.art .etape-emoji { font-size: 1.8rem; }
 .etape-cadenas {
   position: absolute; right: -6px; bottom: -6px; font-size: .85rem;
@@ -409,7 +410,8 @@ input.erreur { border-color: #ef4444; animation: secoue .3s; }
   box-shadow: 0 2px 5px rgba(0,0,0,.25);
 }
 .etape.verrouillee { background: #faf5ea; }
-.etape.verrouillee .etape-rond.art svg { filter: grayscale(.8) brightness(.96); opacity: .75; }
+.etape.verrouillee .etape-rond.art svg,
+.etape.verrouillee .etape-rond.art img { filter: grayscale(.8) brightness(.96); opacity: .75; }
 .etape.verrouillee .etape-nom { color: var(--encre); opacity: .85; }
 .etape.verrouillee .etape-periode { opacity: .8; }
 .etape-verrou {

@@ -240,4 +240,16 @@
       "</g>" +
       "</svg>",
   };
+
+  // Visuels générés par IA (Gemini) : ils remplacent les dessins vectoriels
+  // ci-dessus, conservés en secours. Les fichiers sont mis en cache par le
+  // service worker pour fonctionner hors-ligne.
+  [
+    "commencement", "prehistoire", "egypte", "grece", "rome", "gaulois",
+    "vikings", "moyen-age", "renaissance", "temps-modernes", "revolution",
+    "notre-epoque",
+  ].forEach(function (slug) {
+    window.ART[slug] = '<img class="art-img" src="assets/art/' + slug +
+      '.webp" alt="" loading="lazy" decoding="async">';
+  });
 })();

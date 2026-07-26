@@ -1,7 +1,7 @@
 // Cache hors-ligne : l'appli et tout son contenu (fiches, lieux, idées)
 // fonctionnent sans connexion. Seuls la carte interactive et « autour de
 // moi » demandent internet.
-const CACHE = "tempo-v3";
+const CACHE = "tempo-v4";
 const FICHIERS = [
   "./",
   "index.html",
@@ -28,6 +28,18 @@ const FICHIERS = [
   "js/data/facts/temps-modernes.js",
   "js/data/facts/revolution.js",
   "js/data/facts/notre-epoque.js",
+  "assets/art/commencement.webp",
+  "assets/art/prehistoire.webp",
+  "assets/art/egypte.webp",
+  "assets/art/grece.webp",
+  "assets/art/rome.webp",
+  "assets/art/gaulois.webp",
+  "assets/art/vikings.webp",
+  "assets/art/moyen-age.webp",
+  "assets/art/renaissance.webp",
+  "assets/art/temps-modernes.webp",
+  "assets/art/revolution.webp",
+  "assets/art/notre-epoque.webp",
 ];
 
 self.addEventListener("install", e => {
