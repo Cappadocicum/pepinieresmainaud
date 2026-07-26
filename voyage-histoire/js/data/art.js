@@ -7,7 +7,9 @@
 (function () {
   const S = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" preserveAspectRatio="xMidYMid slice" role="img" aria-hidden="true">';
 
-  window.ART = {
+  // Dessins vectoriels pleine largeur : utilisés en fond de carte (et en
+  // secours si un visuel IA manquait).
+  window.ART_SVG = {
 
     // ——— Le commencement : Big Bang, planète, volcan et premier dino ———
     commencement: S +
@@ -241,15 +243,16 @@
       "</svg>",
   };
 
-  // Visuels générés par IA (Gemini) : ils remplacent les dessins vectoriels
-  // ci-dessus, conservés en secours. Les fichiers sont mis en cache par le
-  // service worker pour fonctionner hors-ligne.
+  // Visuels générés par IA (Gemini) : vignettes rondes utilisées dans les
+  // médaillons (frise, accueil, en-têtes). Mises en cache par le service
+  // worker pour fonctionner hors-ligne.
+  window.ART = {};
   [
     "commencement", "prehistoire", "egypte", "grece", "rome", "gaulois",
     "vikings", "moyen-age", "renaissance", "temps-modernes", "revolution",
     "notre-epoque",
   ].forEach(function (slug) {
     window.ART[slug] = '<img class="art-img" src="assets/art/' + slug +
-      '.webp" alt="" loading="lazy" decoding="async">';
+      '.webp" alt="" decoding="async">';
   });
 })();

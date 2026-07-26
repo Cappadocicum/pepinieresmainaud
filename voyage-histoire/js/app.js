@@ -23,8 +23,10 @@
   function themeCourant() { return window.THEMES[Store.moisCourant()]; }
   function cat(id) { return window.CATEGORIES.find(c => c.id === id); }
 
-  // Illustration dessinée d'un thème (js/data/art.js), repli sur l'emoji
+  // Illustrations d'un thème (js/data/art.js) : visuel IA pour les
+  // médaillons, dessin vectoriel pleine largeur pour les fonds de carte.
   function artSvg(slug) { return (window.ART || {})[slug] || ""; }
+  function fondSvg(slug) { return (window.ART_SVG || {})[slug] || artSvg(slug); }
   function medaillon(t, classe) {
     const svg = artSvg(t.slug);
     return '<div class="' + classe + '"' +
@@ -178,7 +180,7 @@
       '<h2 class="titre-section">🃏 La carte du jour</h2>' +
       '<div class="carte-fait' + (dejaVue ? "" : " neuve") + '" id="carte-jour" style="--c1:' + t.couleur + ";--c2:" + t.couleur2 + '">' +
       '<div class="cf-haut">' +
-      (artSvg(t.slug) ? '<div class="cf-fond" aria-hidden="true">' + artSvg(t.slug) + "</div>" : "") +
+      (fondSvg(t.slug) ? '<div class="cf-fond" aria-hidden="true">' + fondSvg(t.slug) + "</div>" : "") +
       '<span class="cf-emoji">' + fait.e + '</span>' +
       '<span class="cf-jour">' + jour + " " + moisCalendaire(i).split(" ")[0] + "</span></div>" +
       '<div class="cf-bas"><div class="cf-titre">' + esc(fait.t) + '</div>' +
@@ -552,7 +554,7 @@
         ouvrirModale(
           '<div class="grande-carte" style="--c1:' + t.couleur + ";--c2:" + t.couleur2 + '">' +
           '<div class="gc-haut">' +
-          (artSvg(t.slug) ? '<div class="cf-fond" aria-hidden="true">' + artSvg(t.slug) + "</div>" : "") +
+          (fondSvg(t.slug) ? '<div class="cf-fond" aria-hidden="true">' + fondSvg(t.slug) + "</div>" : "") +
           '<span class="gc-emoji">' + f.e + '</span>' +
           '<span class="gc-numero">' + t.emoji + " n°" + j + "</span></div>" +
           '<div class="gc-bas"><div class="gc-titre">' + esc(f.t) + '</div>' +
