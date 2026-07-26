@@ -6,3 +6,4 @@ window.CARD_ART_DAYS["commencement"] = true;
 window.CARD_ART_DAYS["prehistoire"] = true;
 window.CARD_ART_DAYS["egypte"] = true;
 window.CARD_ART_DAYS["grece"] = true;
+window.CARD_ART_DAYS["rome"] = true;
