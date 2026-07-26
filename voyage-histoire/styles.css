@@ -460,6 +460,23 @@ input.erreur { border-color: #ef4444; animation: secoue .3s; }
 .mini-carte .mc-emoji, .mini-carte .mc-jour { position: relative; z-index: 1; }
 .mini-carte .mc-point { top: 4px; right: 4px; }
 
+/* Illustration unique du jour : l'emoji devient un petit badge en coin */
+.cf-emoji.discret, .gc-emoji.discret {
+  position: absolute; left: .7rem; bottom: .6rem; font-size: 1.9rem; z-index: 1;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .4));
+  background: rgba(255, 255, 255, .85); border-radius: 50%;
+  width: 52px; height: 52px; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
+}
+
+/* Inscription : coin du parent */
+.ob-parent {
+  font-weight: 800; margin-top: .4rem; padding-top: .8rem;
+  border-top: 3px dashed #f1e8d8;
+}
+.champ-erreur { color: #dc2626; font-size: .85rem; font-weight: 700; margin-top: -.4rem; }
+.champ small { font-weight: 600; color: var(--encre-douce); }
+
 @media (min-width: 700px) {
   html { font-size: 17px; }
   .album-grille { grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); }

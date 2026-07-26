@@ -27,9 +27,14 @@
   // médaillons, dessin vectoriel pleine largeur pour les fonds de carte.
   function artSvg(slug) { return (window.ART || {})[slug] || ""; }
   function fondSvg(slug) { return (window.ART_SVG || {})[slug] || artSvg(slug); }
-  // Fenêtre d'illustration des cartes à collectionner : fond IA en priorité
-  function fondCarte(slug) {
-    const url = (window.CARD_ART || {})[slug];
+  // Fenêtre d'illustration des cartes à collectionner : illustration unique
+  // du jour si le thème en dispose, sinon fond commun du thème.
+  function artDuJour(slug, jour) {
+    return (window.CARD_ART_DAYS || {})[slug] && jour
+      ? "assets/cards/" + slug + "/" + jour + ".webp" : null;
+  }
+  function fondCarte(slug, jour) {
+    const url = artDuJour(slug, jour) || (window.CARD_ART || {})[slug];
     if (url) return '<div class="cf-fond plein" aria-hidden="true"><img src="' + url + '" alt="" decoding="async"></div>';
     const svg = fondSvg(slug);
     return svg ? '<div class="cf-fond" aria-hidden="true">' + svg + "</div>" : "";
@@ -101,6 +106,24 @@
   window.fermerModale = fermerModale;
 
   // ═══════════ ÉCRAN : Inscription ═══════════
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  // Empreinte SHA-256 du mot de passe parent (rien n'est stocké en clair)
+  async function empreinte(txt) {
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("tempo·" + txt));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  // Enregistre l'e-mail parent côté Netlify (formulaire) pour le récap mensuel
+  function abonnerParent(email, prenom, debut) {
+    const corps = new URLSearchParams({ "form-name": "abonnement-tempo", email, prenom, debut });
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: corps.toString(),
+    }).catch(() => { /* hors-ligne : l'appli fonctionne quand même */ });
+  }
+
   function renderOnboarding() {
     document.body.className = "fond-onboarding";
     app().innerHTML =
@@ -114,13 +137,37 @@
       '<input id="ob-prenom" type="text" maxlength="20" placeholder="Ex. : Luca" autocomplete="off"></label>' +
       '<label class="champ"><span>Ta date de naissance</span>' +
       '<input id="ob-naissance" type="date"></label>' +
+      '<div class="ob-parent">👨‍👩‍👧 Le coin du parent</div>' +
+      '<label class="champ"><span>E-mail du parent</span>' +
+      '<input id="ob-email" type="email" placeholder="parent@exemple.fr" autocomplete="email"></label>' +
+      '<p class="champ-erreur" id="err-email" hidden>Entre une adresse e-mail valide.</p>' +
+      '<label class="champ"><span>Crée un mot de passe parent <small>(6 caractères min.)</small></span>' +
+      '<input id="ob-mdp" type="password" minlength="6" autocomplete="new-password"></label>' +
+      '<p class="champ-erreur" id="err-mdp" hidden>6 caractères minimum.</p>' +
       '<button id="ob-go" class="btn-grand">C’est parti ! 🚀</button>' +
-      '<p class="ob-note">🔒 Tout reste sur cet appareil, rien n’est envoyé sur internet.</p>' +
+      '<p class="ob-note">📬 Un e-mail par mois pour annoncer le nouveau thème — rien d’autre.<br>' +
+      '🔒 Le mot de passe protège le coin des parents ; les données de jeu restent sur cet appareil.</p>' +
       "</div></div>";
-    $("#ob-go").addEventListener("click", () => {
+    $("#ob-go").addEventListener("click", async () => {
       const prenom = $("#ob-prenom").value.trim();
-      if (!prenom) { $("#ob-prenom").classList.add("erreur"); $("#ob-prenom").focus(); return; }
-      Store.creerProfil(prenom, $("#ob-naissance").value || null);
+      const email = $("#ob-email").value.trim();
+      const mdp = $("#ob-mdp").value;
+      let ok = true;
+      if (!prenom) { $("#ob-prenom").classList.add("erreur"); ok = false; }
+      const emailOk = EMAIL_RE.test(email);
+      $("#ob-email").classList.toggle("erreur", !emailOk);
+      $("#err-email").hidden = emailOk;
+      if (!emailOk) ok = false;
+      const mdpOk = mdp.length >= 6;
+      $("#ob-mdp").classList.toggle("erreur", !mdpOk);
+      $("#err-mdp").hidden = mdpOk;
+      if (!mdpOk) ok = false;
+      if (!ok) return;
+      $("#ob-go").disabled = true;
+      let hash = null;
+      try { hash = await empreinte(mdp); } catch (e) { /* contexte non sécurisé */ }
+      Store.creerProfil(prenom, $("#ob-naissance").value || null, email, hash);
+      abonnerParent(email, prenom, Store.get().debut);
       renderBienvenue();
     });
   }
@@ -186,8 +233,8 @@
       bandeau +
       '<h2 class="titre-section">🃏 La carte du jour</h2>' +
       '<div class="carte-fait' + (dejaVue ? "" : " neuve") + '" id="carte-jour" style="--c1:' + t.couleur + ";--c2:" + t.couleur2 + '">' +
-      '<div class="cf-haut">' + fondCarte(t.slug) +
-      '<span class="cf-emoji">' + fait.e + '</span>' +
+      '<div class="cf-haut">' + fondCarte(t.slug, jour) +
+      '<span class="cf-emoji' + (artDuJour(t.slug, jour) ? " discret" : "") + '">' + fait.e + '</span>' +
       '<span class="cf-jour">' + jour + " " + moisCalendaire(i).split(" ")[0] + "</span></div>" +
       '<div class="cf-bas"><div class="cf-titre">' + esc(fait.t) + '</div>' +
       '<div class="cf-texte">' + esc(fait.s) + "</div>" +
@@ -525,18 +572,20 @@
     document.body.className = "fond-app";
 
     const artCarte = (window.CARD_ART || {})[t.slug];
-    const mcArt = artCarte
-      ? '<img class="mc-art" src="' + artCarte + '" alt="" loading="lazy" decoding="async">' : "";
     const cartes = [];
     for (let j = 1; j <= 31; j++) {
       const f = faitDuJour(t.slug, j);
       const ouverte = j <= jourMax;
       const vue = Store.estVue(t.slug, j);
+      const artJ = artDuJour(t.slug, j);
+      const src = artJ || artCarte;
+      const mcArt = src ? '<img class="mc-art" src="' + src + '" alt="" loading="lazy" decoding="async">' : "";
       cartes.push(
         ouverte
           ? '<button class="mini-carte' + (vue ? " vue" : "") + (mcArt ? " avec-art" : "") + '" data-jour="' + j + '" style="--c1:' + t.couleur + ";--c2:" + t.couleur2 + '">' +
             mcArt +
-            '<span class="mc-emoji">' + f.e + '</span><span class="mc-jour">' + j + "</span>" +
+            (artJ ? "" : '<span class="mc-emoji">' + f.e + "</span>") +
+            '<span class="mc-jour">' + j + "</span>" +
             (vue ? "" : '<span class="mc-point"></span>') + "</button>"
           : '<div class="mini-carte fermee"><span class="mc-emoji">❓</span><span class="mc-jour">' + j + "</span></div>"
       );
@@ -563,8 +612,8 @@
         Store.carteVue(t.slug, j);
         ouvrirModale(
           '<div class="grande-carte" style="--c1:' + t.couleur + ";--c2:" + t.couleur2 + '">' +
-          '<div class="gc-haut">' + fondCarte(t.slug) +
-          '<span class="gc-emoji">' + f.e + '</span>' +
+          '<div class="gc-haut">' + fondCarte(t.slug, j) +
+          '<span class="gc-emoji' + (artDuJour(t.slug, j) ? " discret" : "") + '">' + f.e + '</span>' +
           '<span class="gc-numero">' + t.emoji + " n°" + j + "</span></div>" +
           '<div class="gc-bas"><div class="gc-titre">' + esc(f.t) + '</div>' +
           '<div class="gc-texte">' + esc(f.s) + "</div></div></div>" +
@@ -613,9 +662,39 @@
       "</main>" + navHtml("bons");
   }
 
-  // ═══════════ ÉCRAN : Réglages ═══════════
+  // ═══════════ ÉCRAN : Réglages (protégé par le mot de passe parent) ═══════════
+  function renderVerrouParent() {
+    document.body.className = "fond-app";
+    app().innerHTML =
+      '<header class="entete"><a class="btn-rond" href="#home">←</a>' +
+      '<div><div class="salut">🔐 Coin des parents</div>' +
+      '<div class="salut-sous">Réservé aux grandes personnes</div></div></header>' +
+      '<main class="contenu"><div class="carte-blanche">' +
+      '<label class="champ"><span>Mot de passe parent</span>' +
+      '<input id="vp-mdp" type="password" autocomplete="current-password"></label>' +
+      '<p class="champ-erreur" id="vp-err" hidden>Mot de passe incorrect.</p>' +
+      '<button class="btn-grand" id="vp-go">Ouvrir 🔓</button>' +
+      '<p class="note">Mot de passe oublié ? Il faut effacer les données de l’appli depuis les réglages du navigateur (le voyage et l’album seront perdus).</p>' +
+      "</div></main>" + navHtml("home");
+    const verifier = async () => {
+      let h = null;
+      try { h = await empreinte($("#vp-mdp").value); } catch (e) {}
+      if (h && h === Store.get().parentHash) {
+        sessionStorage.setItem("tempo-parent-ok", "1");
+        renderReglages();
+      } else {
+        $("#vp-err").hidden = false;
+        $("#vp-mdp").classList.add("erreur");
+      }
+    };
+    $("#vp-go").addEventListener("click", verifier);
+    $("#vp-mdp").addEventListener("keydown", e => { if (e.key === "Enter") verifier(); });
+    $("#vp-mdp").focus();
+  }
+
   function renderReglages() {
     const s = Store.get();
+    if (s.parentHash && sessionStorage.getItem("tempo-parent-ok") !== "1") return renderVerrouParent();
     document.body.className = "fond-app";
     app().innerHTML =
       '<header class="entete"><a class="btn-rond" href="#home">←</a>' +
@@ -624,6 +703,7 @@
       '<div class="carte-blanche">' +
       '<label class="champ"><span>Prénom</span><input id="r-prenom" type="text" maxlength="20" value="' + esc(s.prenom || "") + '"></label>' +
       '<label class="champ"><span>Date de naissance</span><input id="r-naissance" type="date" value="' + esc(s.naissance || "") + '"></label>' +
+      '<label class="champ"><span>E-mail du parent (récap mensuel)</span><input id="r-email" type="email" value="' + esc(s.parentEmail || "") + '"></label>' +
       '<button class="btn-grand" id="r-save">Enregistrer</button></div>' +
       '<div class="carte-blanche">' +
       '<label class="ligne-toggle"><span>🔓 Mode découverte<br><small>Débloque les 12 mois d’un coup (pour regarder)</small></span>' +
@@ -640,6 +720,11 @@
       const p = $("#r-prenom").value.trim();
       if (p) s.prenom = p;
       s.naissance = $("#r-naissance").value || null;
+      const email = $("#r-email").value.trim();
+      if (email && EMAIL_RE.test(email) && email !== s.parentEmail) {
+        s.parentEmail = email;
+        abonnerParent(email, s.prenom || "", s.debut || "");
+      }
       Store.save();
       go("#home");
     });

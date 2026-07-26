@@ -17,9 +17,20 @@
 <body class="fond-app">
   <div id="app" aria-live="polite"></div>
 
+  <!-- Formulaire détecté par Netlify Forms : reçoit les abonnements des
+       parents au récap mensuel (soumis en JS depuis l'inscription). -->
+  <form name="abonnement-tempo" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="abonnement-tempo">
+    <input type="text" name="bot-field">
+    <input type="email" name="email">
+    <input type="text" name="prenom">
+    <input type="text" name="debut">
+  </form>
+
   <!-- Données -->
   <script src="js/data/themes.js"></script>
   <script src="js/data/art.js"></script>
+  <script src="js/data/card-days.js"></script>
   <script src="js/data/books.js"></script>
   <script src="js/data/activities.js"></script>
   <script src="js/data/places.js"></script>

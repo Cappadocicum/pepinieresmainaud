@@ -7,6 +7,9 @@
     // Profil
     prenom: null,
     naissance: null, // "AAAA-MM-JJ"
+    // Coin des parents : e-mail (récap mensuel) + mot de passe (empreinte)
+    parentEmail: null,
+    parentHash: null,
     // Début du voyage : premier jour du mois de l'inscription
     debut: null, // "AAAA-MM-01"
     // Choix de bon par mois : { 0: {cat:"livre", date:"..."}, 1: {...} }
@@ -44,9 +47,11 @@
     get: () => state,
     save,
 
-    creerProfil(prenom, naissance) {
+    creerProfil(prenom, naissance, parentEmail, parentHash) {
       state.prenom = prenom;
       state.naissance = naissance || null;
+      state.parentEmail = parentEmail || null;
+      state.parentHash = parentHash || null;
       const now = new Date();
       const mm = String(now.getMonth() + 1).padStart(2, "0");
       state.debut = now.getFullYear() + "-" + mm + "-01";
