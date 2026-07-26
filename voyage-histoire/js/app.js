@@ -89,7 +89,8 @@
     app().innerHTML =
       '<div class="onboarding">' +
       '<div class="ob-logo">🎈</div>' +
-      '<h1 class="ob-titre">Mon Voyage<br>dans l’Histoire</h1>' +
+      '<h1 class="ob-titre">Tempo</h1>' +
+      '<div class="ob-marque">Mon voyage dans l’Histoire</div>' +
       '<p class="ob-sous">Pars pour un grand voyage de 12 mois,<br>du Big Bang jusqu’à aujourd’hui ! 🦖🏰🚀</p>' +
       '<div class="carte-blanche">' +
       '<label class="champ"><span>Ton prénom</span>' +
@@ -114,7 +115,7 @@
     app().innerHTML =
       '<div class="onboarding bienvenue">' +
       '<div class="ob-logo pop">🎉</div>' +
-      '<h1 class="ob-titre">Bienvenue ' + esc(s.prenom) + " !</h1>" +
+      '<h1 class="ob-titre">Bienvenue dans Tempo,<br>' + esc(s.prenom) + " !</h1>" +
       '<p class="ob-sous">Ton voyage dans l’Histoire commence<br>en <b>' + moisCalendaire(0) + "</b> avec…</p>" +
       '<div class="carte-theme pop" style="--c1:' + t.couleur + ";--c2:" + t.couleur2 + '">' +
       '<div class="ct-emoji">' + t.emoji + '</div>' +
@@ -597,7 +598,7 @@
       "<b>Mois en cours :</b> " + (Store.voyageTermine() ? "terminé 🏆" : (Store.moisCourant() + 1) + "/12") + "</p>" +
       '<button class="btn-secondaire" id="r-restart">🔁 Recommencer le voyage (bons remis à zéro)</button>' +
       '<button class="btn-danger" id="r-reset">🗑️ Tout effacer et repartir de zéro</button></div>' +
-      '<p class="note-centre">Mon Voyage dans l’Histoire · v1<br>🔒 Toutes les données restent sur cet appareil.</p>' +
+      '<p class="note-centre">Tempo · Mon voyage dans l’Histoire · v1<br>🔒 Toutes les données restent sur cet appareil.</p>' +
       "</main>" + navHtml("home");
 
     $("#r-save").addEventListener("click", () => {

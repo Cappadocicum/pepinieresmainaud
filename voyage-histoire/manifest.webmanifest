@@ -1,7 +1,7 @@
 {
-  "name": "Mon Voyage dans l'Histoire",
-  "short_name": "Voyage Histoire",
-  "description": "Chaque mois une période de l'Histoire, chaque jour une découverte : un voyage de 12 mois pour les enfants.",
+  "name": "Tempo — Mon voyage dans l'Histoire",
+  "short_name": "Tempo",
+  "description": "Tempo : chaque mois une période de l'Histoire, chaque jour une découverte. Un voyage de 12 mois pour les enfants.",
   "lang": "fr",
   "start_url": "./",
   "scope": "./",

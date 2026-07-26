@@ -1,6 +1,6 @@
-# 🎈 Mon Voyage dans l'Histoire
+# 🎈 Tempo — Mon voyage dans l'Histoire
 
-L'application du cahier « Mon Voyage dans l'Histoire » : un voyage de
+**Tempo**, l'application du cahier « Mon Voyage dans l'Histoire » : un voyage de
 **12 mois à travers l'Histoire** pour les enfants de 4 à 10 ans, à vivre
 avec leurs parents.
 
